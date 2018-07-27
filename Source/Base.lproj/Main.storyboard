@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" useAutolayout="YES" colorMatched="YES" initialViewController="BV1-FR-VrT">
+    <device id="ipad9_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="tXr-a1-R10">
+            <objects>
+                <viewController id="BV1-FR-VrT" customClass="ViewController" customModule="MandelBulb2" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="Ve7-aF-loD"/>
+                        <viewControllerLayoutGuide type="bottom" id="2Dy-TN-HU4"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="3se-qz-xqx" userLabel="MetalView" customClass="Background" customModule="MandelBulb2" customModuleProvider="target">
+                        <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="z2q-xp-nv4" customClass="MTKView">
+                                <rect key="frame" x="69" y="48" width="243" height="217"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <gestureRecognizers/>
+                                <connections>
+                                    <outletCollection property="gestureRecognizers" destination="oqd-Qd-pXf" appends="YES" id="XYk-lD-o04"/>
+                                    <outletCollection property="gestureRecognizers" destination="d7u-cL-wjD" appends="YES" id="FUp-eM-rJr"/>
+                                    <outletCollection property="gestureRecognizers" destination="MT5-c0-4rd" appends="YES" id="TAp-uu-PH5"/>
+                                    <outletCollection property="gestureRecognizers" destination="gfd-Vs-eLn" appends="YES" id="BIn-V1-0s6"/>
+                                    <outletCollection property="gestureRecognizers" destination="9Jg-RL-0Ra" appends="YES" id="9uu-R3-vIx"/>
+                                    <outletCollection property="gestureRecognizers" destination="qQh-Wm-4jL" appends="YES" id="k6p-Wy-RnY"/>
+                                </connections>
+                            </view>
+                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Xus-nt-1UP" customClass="MTKView">
+                                <rect key="frame" x="367" y="48" width="243" height="217"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <gestureRecognizers/>
+                                <connections>
+                                    <outletCollection property="gestureRecognizers" destination="FXf-86-1vE" appends="YES" id="RsU-0a-JQw"/>
+                                    <outletCollection property="gestureRecognizers" destination="0hM-Vg-ujL" appends="YES" id="EfA-TG-Jzt"/>
+                                    <outletCollection property="gestureRecognizers" destination="V1W-pa-FK4" appends="YES" id="FLf-cB-c8G"/>
+                                    <outletCollection property="gestureRecognizers" destination="jdm-lK-3Ii" appends="YES" id="bVv-JG-Pdo"/>
+                                    <outletCollection property="gestureRecognizers" destination="9p4-U3-vCJ" appends="YES" id="gP5-qH-O4z"/>
+                                    <outletCollection property="gestureRecognizers" destination="WQb-II-ygS" appends="YES" id="N03-6V-tyk"/>
+                                </connections>
+                            </view>
+                            <view tag="12" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="DJG-QT-dmm" customClass="WidgetGroup" customModule="MandelBulb2" customModuleProvider="target">
+                                <rect key="frame" x="69" y="303" width="114" height="90"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" red="0.1223958432674408" green="0.1223958432674408" blue="0.1223958432674408" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                            </view>
+                            <view tag="12" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="J3H-li-zgP" customClass="HistogramView" customModule="MandelBulb2" customModuleProvider="target">
+                                <rect key="frame" x="69" y="426" width="114" height="90"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" red="0.1223958433" green="0.1223958433" blue="0.1223958433" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" cocoaTouchSystemColor="scrollViewTexturedBackgroundColor"/>
+                        <gestureRecognizers/>
+                    </view>
+                    <connections>
+                        <outlet property="histogramView" destination="J3H-li-zgP" id="rsU-jp-jQG"/>
+                        <outlet property="mtkViewL" destination="z2q-xp-nv4" id="5dt-jh-Lvx"/>
+                        <outlet property="mtkViewR" destination="Xus-nt-1UP" id="PlJ-Pu-dhn"/>
+                        <outlet property="wg" destination="DJG-QT-dmm" id="ho0-IA-kws"/>
+                        <segue destination="DmP-PU-S1P" kind="popover" identifier="helpSegue" popoverAnchorView="DJG-QT-dmm" id="Sff-rR-uAS">
+                            <popoverArrowDirection key="popoverArrowDirection" up="YES" down="YES" left="YES" right="YES"/>
+                        </segue>
+                        <segue destination="7tH-9t-GCc" kind="popover" identifier="saveLoadSegue" popoverAnchorView="DJG-QT-dmm" id="3d2-g5-7T7">
+                            <popoverArrowDirection key="popoverArrowDirection" up="YES" down="YES" left="YES" right="YES"/>
+                        </segue>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="SZV-WD-TEh" sceneMemberID="firstResponder"/>
+                <pinchGestureRecognizer id="oqd-Qd-pXf">
+                    <connections>
+                        <action selector="pinchGesture:" destination="BV1-FR-VrT" id="NYK-9M-s5c"/>
+                    </connections>
+                </pinchGestureRecognizer>
+                <pinchGestureRecognizer id="FXf-86-1vE">
+                    <connections>
+                        <action selector="pinchGesture:" destination="BV1-FR-VrT" id="yjZ-dc-O0g"/>
+                    </connections>
+                </pinchGestureRecognizer>
+                <tapGestureRecognizer id="d7u-cL-wjD">
+                    <connections>
+                        <action selector="tapGesture:" destination="BV1-FR-VrT" id="PSr-k1-C6X"/>
+                    </connections>
+                </tapGestureRecognizer>
+                <tapGestureRecognizer id="0hM-Vg-ujL">
+                    <connections>
+                        <action selector="tapGesture:" destination="BV1-FR-VrT" id="inh-ux-EjL"/>
+                    </connections>
+                </tapGestureRecognizer>
+                <panGestureRecognizer minimumNumberOfTouches="1" maximumNumberOfTouches="1" id="MT5-c0-4rd">
+                    <connections>
+                        <action selector="panGesture:" destination="BV1-FR-VrT" id="0aN-XX-tKF"/>
+                    </connections>
+                </panGestureRecognizer>
+                <panGestureRecognizer minimumNumberOfTouches="1" maximumNumberOfTouches="1" id="V1W-pa-FK4">
+                    <connections>
+                        <action selector="panGesture:" destination="BV1-FR-VrT" id="fdh-Co-jJ8"/>
+                    </connections>
+                </panGestureRecognizer>
+                <panGestureRecognizer minimumNumberOfTouches="2" maximumNumberOfTouches="2" id="gfd-Vs-eLn">
+                    <connections>
+                        <action selector="pan2Gesture:" destination="BV1-FR-VrT" id="7WM-Px-8oF"/>
+                    </connections>
+                </panGestureRecognizer>
+                <panGestureRecognizer minimumNumberOfTouches="2" maximumNumberOfTouches="2" id="jdm-lK-3Ii">
+                    <connections>
+                        <action selector="pan2Gesture:" destination="BV1-FR-VrT" id="Zsn-r1-Lbv"/>
+                    </connections>
+                </panGestureRecognizer>
+                <panGestureRecognizer minimumNumberOfTouches="3" id="9Jg-RL-0Ra">
+                    <connections>
+                        <action selector="pan3Gesture:" destination="BV1-FR-VrT" id="3xG-kv-B26"/>
+                    </connections>
+                </panGestureRecognizer>
+                <panGestureRecognizer minimumNumberOfTouches="3" id="9p4-U3-vCJ">
+                    <connections>
+                        <action selector="pan3Gesture:" destination="BV1-FR-VrT" id="PaK-e4-H9Y"/>
+                    </connections>
+                </panGestureRecognizer>
+                <tapGestureRecognizer numberOfTapsRequired="2" id="qQh-Wm-4jL">
+                    <connections>
+                        <action selector="tap2Gesture:" destination="BV1-FR-VrT" id="Zh4-QO-YKh"/>
+                    </connections>
+                </tapGestureRecognizer>
+                <tapGestureRecognizer numberOfTapsRequired="2" id="WQb-II-ygS">
+                    <connections>
+                        <action selector="tap2Gesture:" destination="BV1-FR-VrT" id="Esr-7C-7ZA"/>
+                    </connections>
+                </tapGestureRecognizer>
+            </objects>
+            <point key="canvasLocation" x="-9208" y="-3731"/>
+        </scene>
+        <!--Help View Controller-->
+        <scene sceneID="Ebo-vr-ivu">
+            <objects>
+                <viewController id="DmP-PU-S1P" customClass="HelpViewController" customModule="MandelBulb2" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="4oy-Up-mt0"/>
+                        <viewControllerLayoutGuide type="bottom" id="2CL-fs-gkq"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="left" id="6xI-vQ-8rU">
+                        <rect key="frame" x="0.0" y="0.0" width="640" height="640"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" heightSizable="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" textAlignment="natural" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="a8Z-Ux-P4R">
+                                <rect key="frame" x="147" y="35" width="473" height="585"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="bulbHelp" translatesAutoresizingMaskIntoConstraints="NO" id="C3Q-fp-9Ny">
+                                <rect key="frame" x="20" y="35" width="119" height="585"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="119" id="EHk-xB-pTk"/>
+                                </constraints>
+                            </imageView>
+                        </subviews>
+                        <accessibility key="accessibilityConfiguration">
+                            <accessibilityTraits key="traits" staticText="YES"/>
+                        </accessibility>
+                        <constraints>
+                            <constraint firstItem="C3Q-fp-9Ny" firstAttribute="top" secondItem="4oy-Up-mt0" secondAttribute="bottom" constant="15" id="0mX-Mg-MvU"/>
+                            <constraint firstAttribute="bottom" secondItem="C3Q-fp-9Ny" secondAttribute="bottom" constant="20" symbolic="YES" id="E3a-MX-7Dk"/>
+                            <constraint firstItem="a8Z-Ux-P4R" firstAttribute="trailing" secondItem="6xI-vQ-8rU" secondAttribute="trailingMargin" id="G7t-Nb-ONV"/>
+                            <constraint firstItem="a8Z-Ux-P4R" firstAttribute="leading" secondItem="C3Q-fp-9Ny" secondAttribute="trailing" constant="8" symbolic="YES" id="GKK-p2-ivi"/>
+                            <constraint firstItem="C3Q-fp-9Ny" firstAttribute="leading" secondItem="6xI-vQ-8rU" secondAttribute="leadingMargin" id="bOr-SK-ZWR"/>
+                            <constraint firstItem="C3Q-fp-9Ny" firstAttribute="bottom" secondItem="a8Z-Ux-P4R" secondAttribute="bottom" id="ozd-R4-f93"/>
+                            <constraint firstItem="C3Q-fp-9Ny" firstAttribute="top" secondItem="a8Z-Ux-P4R" secondAttribute="top" id="rVp-ee-KtT"/>
+                        </constraints>
+                    </view>
+                    <extendedEdge key="edgesForExtendedLayout"/>
+                    <value key="contentSizeForViewInPopover" type="size" width="640" height="640"/>
+                    <size key="freeformSize" width="640" height="640"/>
+                    <connections>
+                        <outlet property="textView" destination="a8Z-Ux-P4R" id="yjT-Yu-3do"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="uAD-4z-cQ1" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-8404" y="-3981"/>
+        </scene>
+        <!--SaveLoadVC-->
+        <scene sceneID="0be-Ek-k1H">
+            <objects>
+                <viewController title="KeypadVC" id="7tH-9t-GCc" userLabel="SaveLoadVC" customClass="SaveLoadViewController" customModule="MandelBulb2" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="Otq-EQ-XCC"/>
+                        <viewControllerLayoutGuide type="bottom" id="W5F-2I-CMN"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="left" id="Qql-8N-SA7">
+                        <rect key="frame" x="0.0" y="0.0" width="400" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="58" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="G5B-8F-nfj">
+                                <rect key="frame" x="13" y="9" width="367" height="571"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="SLCell" rowHeight="58" id="iXI-ga-3YZ" customClass="SaveLoadCell" customModule="MandelBulb2" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="28" width="367" height="58"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="iXI-ga-3YZ" id="fof-zN-kzW">
+                                            <rect key="frame" x="0.0" y="0.0" width="367" height="57.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="EmM-sB-dsm">
+                                                    <rect key="frame" x="10" y="6" width="275" height="41"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                    <state key="normal" title="Load">
+                                                        <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                    </state>
+                                                    <connections>
+                                                        <action selector="buttonTapped:" destination="iXI-ga-3YZ" eventType="touchUpInside" id="Gbg-L1-chm"/>
+                                                    </connections>
+                                                </button>
+                                                <button opaque="NO" tag="1" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3dy-c5-Aml">
+                                                    <rect key="frame" x="306" y="7" width="46" height="41"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                    <state key="normal" title="Save">
+                                                        <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    </state>
+                                                    <connections>
+                                                        <action selector="buttonTapped:" destination="iXI-ga-3YZ" eventType="touchUpInside" id="3wp-Xw-dBo"/>
+                                                    </connections>
+                                                </button>
+                                            </subviews>
+                                            <color key="backgroundColor" cocoaTouchSystemColor="darkTextColor"/>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="loadCell" destination="EmM-sB-dsm" id="qu3-Lj-0au"/>
+                                        </connections>
+                                    </tableViewCell>
+                                </prototypes>
+                            </tableView>
+                        </subviews>
+                        <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <value key="contentSizeForViewInPopover" type="size" width="400" height="600"/>
+                    <size key="freeformSize" width="400" height="600"/>
+                    <connections>
+                        <outlet property="tableView" destination="G5B-8F-nfj" id="7Me-EX-21T"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="rRD-F4-OtX" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-8524" y="-3299"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="bulbHelp" width="210" height="1024"/>
+    </resources>
+</document>

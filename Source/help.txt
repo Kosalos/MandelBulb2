@@ -1,0 +1,94 @@
+This app renders three types of 3D drawings
+using the Point Cloud method:
+1. The collection of MandelBulb equations
+2. A "3D stack" of Julia Set drawings.
+3. A rendition of the MandelBox algorithm.
+The point cloud method lets us see inside objects
+in a way that isn't possible with ray marching.
+
+The panel on the left holds two kinds of controls:
+buttons, and one or two dimensional widgets.
+
+Widgets:
+Slide your finger up and down the list to select
+the desired widget.  Its legend will turn Green.
+
+Now on the image,
+slider your finger to control the widget's parameters.
+
+Double tap on a widget legend to toggle it between
+fast and slow editing.  Red graph background = slow.
+
+Buttons:
+A button command is performed by selecting the
+legend, then releasing your finger.
+
+Note: Pinch the image to control zoom.
+Note: Drag two fingers to rotate the image.
+Note: Drag three fingers to pan the image.
+Note: Tap image to stop rotation.
+Note: Double Tap image to toggle display of control panel.
+
+A. Select Formula
+   Tap on name to launch the Formula popup.
+   Note: If a MandelBulb formula is chosen the additional control
+   "Power" is displayed here, which sets the MandelBulb power
+   from 2 to 12.
+B. Bounding box axis controls move the Bounding box
+   in the respective direction.
+C. Control the size of the bounding box.
+D. Show/Hide the axes legends and bounding box.
+E. Select point size.
+F. Select resolution of point cloud. 1,2 or 4 times 300x300x300.
+G. Histogram View displays the relative number of points at
+   each iteration level.
+   Use this graph to select which points are rendered.
+   You can scroll the active region bars by dragging a
+   finger across the graph, or use the following widgets:
+H. Position the center of the Histogram active region.
+I. Control the width of the Histogram active region.
+J. The number of points inside the active region.
+K. Controls the points' coloring range and center.
+L. Cycle through four color palettes.
+
+Box ------------
+    The Box formula has the following three controls:
+M.  B Fold controls the two 'Box Fold' parameters.
+N.  S Fold controls the two 'Sphere Fold' parameters.
+O.  Scale scales the above mentioned parameters.
+
+Julia -----------
+    Not shown in the legend, when you select the Julia formula
+    this region holds four controls:
+    "Real", "Imag", "Mult", and "Zoom".
+
+    Mandelbulb and Box formulas calculate points throughout
+    the 3D space of the bounding box.
+    The Julia formula works differently: it calculates a series
+    of two dimensional Julia set images,
+    then stacks them above each other within the bounding box.
+    The Red and Green axes scroll as usual, but the blue axis
+    holds the stacked 2D Julia set drawings.
+    The Xaxis of the 4 widgets controls the parameters of the
+    first Julia set, while the Yaxis controls the parameters
+    of the last Julia set.
+    All interior Jula sets linearly interpolate between these two.
+
+P.  Reset parameters back to MandelBulb formula #1.
+Q.  VERY Limited Undo.
+    You can only undo the most recent 'Calc'.
+R.  Smooth does a convolution on the points to remove
+    spikes in the point values.
+S.  Smooth2 does the same except stronger.
+T.  Quant1 quantizes or posterizes the point cloud values
+    by removing selected point values.
+U.  Quant2 does the same idea on different point regions.
+
+V.  Stereo toggles stereo viewing on and off.
+    The image is rendered twice, for 'cross-eyed' 3D viewing.
+    With the iPad held two feet away, slightly cross
+    your eyes so that there is a third image in the middle.
+    Relax your gaze, and concentrate only on that
+    middle image, which is in 3D.
+
+W.  Launch the Save/Load dialog.
