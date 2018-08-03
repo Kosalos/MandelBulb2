@@ -28,6 +28,7 @@ Note: Drag two fingers to rotate the image.
 Note: Drag three fingers to pan the image.
 Note: Tap image to stop rotation.
 Note: Double Tap image to toggle display of control panel.
+Note: Swipe up/down on control panel to move focus.
 
 A. Select Formula
    Tap on name to launch the Formula popup.

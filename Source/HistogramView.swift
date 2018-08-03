@@ -69,6 +69,7 @@ class HistogramView: UIView {
             if control.center < 0 { control.center = 0 } else if control.center > Int32(maxX) { control.center = Int32(maxX) }
             setNeedsDisplay()
 
+            vc.wg.setNeedsDisplay() // so #pts is updated
             //Swift.print("Touched ",pt.x,pt.y,"  cc = ", control.center.description, "  spread =", control.spread.description)
         }
     }

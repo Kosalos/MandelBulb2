@@ -68,8 +68,6 @@ kernel void mapShader
     w.y = control.basey + fpy * control.scale;
     w.z = control.basez + fpz * control.scale;
     
-    int insideCount = 0;
-    
     // 0 Bulb 1 --------------------------------------------------------------------------------
     if (control.formula == 0) { // https://github.com/jtauber/mandelbulb/blob/master/mandel8.py
         float r,theta,phi,pwr,ss,dist;
@@ -88,12 +86,7 @@ kernel void mapShader
             w.z += pwr * cos(theta * control.power);
 
             dist = w.x * w.x + w.y * w.y + w.z * w.z;
-            if(dist > 2) break;
-            
-            if(dist < 1) {
-                if(++insideCount > MAX_ITERATIONS/2) break;
-            }
-            else insideCount = 0;
+            if(dist > 4) break;
         }
         
         if(iter == MAX_ITERATIONS) iter = 0;
@@ -476,12 +469,12 @@ vertex Transfer texturedVertexShader
     return out;
 }
 
-fragment float4 texturedFragmentShader
+fragment half4 texturedFragmentShader
 (
  Transfer in [[stage_in]],
  texture2d<float> tex2D [[texture(0)]],
  sampler sampler2D [[sampler(0)]])
 {
-    return in.color;
+    return half4(in.color);
 }
 

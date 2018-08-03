@@ -57,8 +57,24 @@ class ViewController: UIViewController, WGDelegate {
         layoutViews()
 
         Timer.scheduledTimer(withTimeInterval:0.01, repeats:true) { timer in self.paceTimerHandler() }
+        
+        let swipeUp = UISwipeGestureRecognizer(target: self, action: #selector(self.handleGesture(gesture:)))
+        swipeUp.direction = .up
+        self.view.addGestureRecognizer(swipeUp)
+        
+        let swipeDown = UISwipeGestureRecognizer(target: self, action: #selector(self.handleGesture(gesture:)))
+        swipeDown.direction = .down
+        self.view.addGestureRecognizer(swipeDown)
     }
-
+    
+    @objc func handleGesture(gesture: UISwipeGestureRecognizer) -> Void {
+        switch gesture.direction {
+        case .up : wg.moveFocus(-1)
+        case .down : wg.moveFocus(+1)
+        default : break
+        }
+    }
+    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         vc = self

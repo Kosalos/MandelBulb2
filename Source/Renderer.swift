@@ -139,13 +139,6 @@ class Renderer: NSObject, MTKViewDelegate {
     }
     
     func draw(in view: MTKView) {
-        _ = inFlightSemaphore.wait(timeout: DispatchTime.distantFuture)
-        
-        guard let commandBuffer = commandQueue.makeCommandBuffer() else { return }
-
-        let semaphore = inFlightSemaphore
-        commandBuffer.addCompletedHandler { (_ commandBuffer)-> Swift.Void in semaphore.signal() }
-
         let toeIn:Float = 0.01
         let stereoAngle:Float = ident == 0 ? -toeIn : +toeIn
         
@@ -155,7 +148,7 @@ class Renderer: NSObject, MTKViewDelegate {
         uniforms = UnsafeMutableRawPointer(dynamicUniformBuffer.contents() + uniformBufferOffset).bindMemory(to:Uniforms.self, capacity:1)
         //-----------------------------------
         uniforms[0].projectionMatrix = projectionMatrix
-        uniforms[0].pointSize = pointSize        
+        uniforms[0].pointSize = pointSize
         uniforms[0].mvp =
             projectionMatrix
             * translate(camera.x,camera.y,-camera.z)
@@ -163,6 +156,13 @@ class Renderer: NSObject, MTKViewDelegate {
             * arcBall.transformMatrix
         //-----------------------------------
         
+        _ = inFlightSemaphore.wait(timeout: DispatchTime.distantFuture)
+        
+        guard let commandBuffer = commandQueue.makeCommandBuffer() else { return }
+
+        let semaphore = inFlightSemaphore
+        commandBuffer.addCompletedHandler { (_ commandBuffer)-> Swift.Void in semaphore.signal() }
+
         guard let r = view.currentRenderPassDescriptor else { return }
         guard let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: r) else { return }
 
