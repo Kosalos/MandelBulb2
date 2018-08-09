@@ -77,11 +77,11 @@ Julia -----------
 
 Q Julia -----------
     Not shown in the legend, when you select the Q Julia formula
-    this region holds three controls:
-    "P 1,2", "P 3,4" and "P 5".
+    this region holds four controls:
+    "P 1,2", "P 3,4", "P 5" and "P 6".
     You are specifiying the Constant parameter to the
     Quaternion Julia Set equation, along with a portion
-    of the initial seed value.
+    of the initial seed value, and an equation multiplier.
 
 P.  Reset parameters back to MandelBulb formula #1.
 Q.  VERY Limited Undo.
@@ -101,3 +101,5 @@ V.  Stereo toggles stereo viewing on and off.
     middle image, which is in 3D.
 
 W.  Launch the Save/Load dialog.
+
+Note Shown:  Equation.  Toggle display of live shader source code.

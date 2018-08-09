@@ -19,6 +19,7 @@
 		1D14907A1F9FA784004B538F /* Bulb.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D1490791F9FA784004B538F /* Bulb.swift */; };
 		1D1D9F001FD5BEAB004C2571 /* HelpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D1D9EFF1FD5BEAB004C2571 /* HelpViewController.swift */; };
 		1D1FF8E91FF94B5F00A879E3 /* help.txt in Resources */ = {isa = PBXBuildFile; fileRef = 1D1FF8E81FF94B5F00A879E3 /* help.txt */; };
+		1D2BFD01211CAC1200AE4B06 /* DynamicSourceCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D2BFD00211CAC1200AE4B06 /* DynamicSourceCode.swift */; };
 		1D406F001FE86E67002C88F3 /* HistogramView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D406EFF1FE86E67002C88F3 /* HistogramView.swift */; };
 		1D4593A51FDF4F7000E6EBFE /* SaveLoadViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D4593A41FDF4F7000E6EBFE /* SaveLoadViewController.swift */; };
 		1D7B165F2107FBFA00B0B3AE /* WidgetGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D7B165E2107FBFA00B0B3AE /* WidgetGroup.swift */; };
@@ -40,6 +41,7 @@
 		1D1490791F9FA784004B538F /* Bulb.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bulb.swift; sourceTree = "<group>"; };
 		1D1D9EFF1FD5BEAB004C2571 /* HelpViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HelpViewController.swift; sourceTree = "<group>"; };
 		1D1FF8E81FF94B5F00A879E3 /* help.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = help.txt; sourceTree = "<group>"; };
+		1D2BFD00211CAC1200AE4B06 /* DynamicSourceCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DynamicSourceCode.swift; sourceTree = "<group>"; };
 		1D406EFF1FE86E67002C88F3 /* HistogramView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistogramView.swift; sourceTree = "<group>"; };
 		1D4593A41FDF4F7000E6EBFE /* SaveLoadViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SaveLoadViewController.swift; sourceTree = "<group>"; };
 		1D7B165E2107FBFA00B0B3AE /* WidgetGroup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WidgetGroup.swift; sourceTree = "<group>"; };
@@ -85,6 +87,7 @@
 				1D406EFF1FE86E67002C88F3 /* HistogramView.swift */,
 				1D1D9EFF1FD5BEAB004C2571 /* HelpViewController.swift */,
 				1D4593A41FDF4F7000E6EBFE /* SaveLoadViewController.swift */,
+				1D2BFD00211CAC1200AE4B06 /* DynamicSourceCode.swift */,
 				1D08EEBB1FA58F0800F287FD /* ColorMap.swift */,
 				1D08EEB71FA539C700F287FD /* ArcBall.swift */,
 				1D1490621F9FA199004B538F /* AppDelegate.swift */,
@@ -181,6 +184,7 @@
 				1D7B165F2107FBFA00B0B3AE /* WidgetGroup.swift in Sources */,
 				1D08EEBC1FA58F0800F287FD /* ColorMap.swift in Sources */,
 				1D1D9F001FD5BEAB004C2571 /* HelpViewController.swift in Sources */,
+				1D2BFD01211CAC1200AE4B06 /* DynamicSourceCode.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

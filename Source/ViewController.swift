@@ -22,6 +22,7 @@ class ViewController: UIViewController, WGDelegate {
     @IBOutlet var mtkViewR: MTKView!
     @IBOutlet var wg: WidgetGroup!
     @IBOutlet var histogramView: HistogramView!
+    @IBOutlet var textView: UITextView!
     
     var rendererL: Renderer!
     var rendererR: Renderer!
@@ -66,6 +67,12 @@ class ViewController: UIViewController, WGDelegate {
         let swipeDown = UISwipeGestureRecognizer(target: self, action: #selector(self.handleGesture(gesture:)))
         swipeDown.direction = .down
         self.view.addGestureRecognizer(swipeDown)
+        
+        view.bringSubview(toFront:textView)
+        textView.backgroundColor = .clear
+        textView.textColor = .white
+        textView.text = ""
+        textView.isHidden = true
     }
     
     @objc func handleGesture(gesture: UISwipeGestureRecognizer) -> Void {
@@ -107,27 +114,27 @@ class ViewController: UIViewController, WGDelegate {
         
         if control.formula != JULIA_FORMULA {
             wg.addColor(3,Float(RowHT)); wg.addSingleFloat(&control.basez, -5,5,0.1, "Blue", .cageXYZ)
-            
-            wg.addSingleFloat(&chgScale,0.99,1.01,0.05,"Scale", .cageScale)
-            wg.addCommand("Show Axes",.showAxes)
-            wg.addLine()
-            wg.addOptionSelect(2,"Point Size","Select Point Size",pOptions);
-            wg.addOptionSelect(3,"Cloud Count","Select # Overlapping Clouds",cOptions);
-            
-            wg.addLine()
-            histogramView.frame = CGRect(x:5, y:wg.nextYCoord()+2, width:wgWidth-10, height:44)
-            view.bringSubview(toFront:histogramView)
-            
-            wg.addGap(30)
-            wg.addSingleFloat(&controlCenter,0,40,2,"Center",.histo)
-            wg.addSingleFloat(&controlSpread,0,10,2,"Spread",.histo)
-            wg.addString("",1)
-            
-            wg.addLine()
-            wg.addDualFloat(&controlColorRange,&controlColorOffset,0,256,50,"Color",.color)
-            wg.addCommand("Palette",.palette)
-            wg.addLine()
         }
+        
+        wg.addSingleFloat(&chgScale,0.99,1.01,0.05,"Scale", .cageScale)
+        wg.addCommand("Show Axes",.showAxes)
+        wg.addLine()
+        wg.addOptionSelect(2,"Point Size","Select Point Size",pOptions);
+        wg.addOptionSelect(3,"Cloud Count","Select # Overlapping Clouds",cOptions);
+        
+        wg.addLine()
+        histogramView.frame = CGRect(x:5, y:wg.nextYCoord()+2, width:wgWidth-10, height:44)
+        view.bringSubview(toFront:histogramView)
+        
+        wg.addGap(30)
+        wg.addSingleFloat(&controlCenter,0,40,2,"Center",.histo)
+        wg.addSingleFloat(&controlSpread,0,10,2,"Spread",.histo)
+        wg.addString("",1)
+        
+        wg.addLine()
+        wg.addDualFloat(&controlColorRange,&controlColorOffset,0,256,50,"Color",.color)
+        wg.addCommand("Palette",.palette)
+        wg.addLine()
         
         if control.formula == JULIA_FORMULA {
             wg.addLegend("Julia")
@@ -143,6 +150,7 @@ class ViewController: UIViewController, WGDelegate {
             wg.addDualFloat(UnsafeMutableRawPointer(&control.re1),  UnsafeMutableRawPointer(&control.re2), -1,1,0.5,"P 1,2", .juliaBox)
             wg.addDualFloat(UnsafeMutableRawPointer(&control.im1),  UnsafeMutableRawPointer(&control.im2), -1,1,0.5,"P 3,4", .juliaBox)
             wg.addSingleFloat(UnsafeMutableRawPointer(&control.mult1),-1,1,0.5,"P 5", .juliaBox)
+            wg.addSingleFloat(UnsafeMutableRawPointer(&control.mult2),-3,3,1,"P 6", .juliaBox)
             wg.addLine()
         }
         
@@ -163,6 +171,7 @@ class ViewController: UIViewController, WGDelegate {
         wg.addCommand("Stereo",.stereo)
         wg.addCommand("Save/Load",.saveLoad)
         wg.addCommand("Help",.help)
+        wg.addCommand("Equation",.equation)
         wg.addLine()
         wg.setNeedsDisplay()
     }
@@ -178,7 +187,7 @@ class ViewController: UIViewController, WGDelegate {
             control = undoControl2
             control.hop = 1
             bulb.newBusy(.calc)
-        case .cageXYZ  :
+        case .cageXYZ :
             showAxesFlag = true
             bulb.calcCages()
         case .changeEnd, .power :
@@ -195,6 +204,7 @@ class ViewController: UIViewController, WGDelegate {
             bulb.newBusy(.vertices)
         case .juliaBox :
             bulb.fastCalc()
+            dynamicSourceCode()
         case .smooth   : bulb.smoothData()
         case .smooth2  : bulb.smoothData2()
         case .quant    : bulb.quantizeData()
@@ -203,9 +213,15 @@ class ViewController: UIViewController, WGDelegate {
         case .stereo   :
             stereoFlag = !stereoFlag
             layoutViews()
-        case .cageScale: changeScale(control.scale * chgScale)
+        case .cageScale:
+            changeScale(control.scale * chgScale)
+            showAxesFlag = true
+            bulb.calcCages()
         case .saveLoad : performSegue(withIdentifier: "saveLoadSegue", sender: self)
         case .help     : performSegue(withIdentifier: "helpSegue", sender: self)
+        case .equation :
+            textView.isHidden = !textView.isHidden
+            dynamicSourceCode()
         default : break
         }
         
@@ -271,6 +287,7 @@ class ViewController: UIViewController, WGDelegate {
                 control.re1 = 0.0912499353
                 control.im1 = 0.485499978
                 control.mult1 = -0.389624834
+                control.mult2 = 1
                 control.re2 = -0.238750175
                 control.im2 = -0.389999956
                 control.center = 12
@@ -343,6 +360,8 @@ class ViewController: UIViewController, WGDelegate {
         viewCenter.x = mtkViewL.frame.width/2
         viewCenter.y = mtkViewL.frame.height/2
         arcBall.initialize(Float(mtkViewL.frame.width),Float(mtkViewL.frame.height))
+        
+        textView.frame = CGRect(x:wgWidth+10, y:1, width:520, height:760)
     }
     
     //MARK:-

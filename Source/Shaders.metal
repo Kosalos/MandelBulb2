@@ -10,14 +10,14 @@ using namespace metal;
 #define BOX_FORMULA    6
 #define QJULIA_FORMULA 7
 
-//float4 quaternionMultiply(float4 a,float4 b) {  // x = real; y,z,w = i,j,k
-//    float4 ans;
-//    ans.x = a.x * b.x - a.y * b.y - a.z * b.z - a.w * b.w;
-//    ans.y = a.x * b.y + a.y * b.x + a.z * b.w - a.w * b.z;
-//    ans.z = a.x * b.z - a.z * b.w + a.z * b.x + a.w * b.z;
-//    ans.w = a.x * b.w + a.y * b.z - a.z * b.y + a.w * b.x;
-//    return ans;
-//}
+float4 quaternionMultiply(float4 a,float4 b) {  // x = real; y,z,w = i,j,k
+    float4 ans;
+    ans.x = a.x * b.x - a.y * b.y - a.z * b.z - a.w * b.w;
+    ans.y = a.x * b.y + a.y * b.x + a.z * b.w - a.w * b.z;
+    ans.z = a.x * b.z - a.z * b.w + a.z * b.x + a.w * b.z;
+    ans.w = a.x * b.w + a.y * b.z - a.z * b.y + a.w * b.x;
+    return ans;
+}
 
 float4 quaternionSquare(float4 a) {  // x = real; y,z,w = i,j,k
     float temp = a.x * 2;
@@ -105,10 +105,10 @@ kernel void mapShader
         q.w = w.y;
         
         for(;;) {
-            q = quaternionSquare(q);
+            q = quaternionSquare(q) * control.mult2;
             q += c;
             if(q.x > 4) break;
-            if(++iter == MAX_ITERATIONS) {
+            if(++iter == 100) { 
                 iter = 255;
                 break;
             }

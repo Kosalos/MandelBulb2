@@ -8,12 +8,13 @@ protocol WGDelegate {
     func wgGetOptionString(_ ident:Int) -> String
 }
 
-enum CmdIdent { case none,changeEnd,power,help,reset,undo,showAxes,smooth,smooth2,quant,quant2,saveLoad,palette,stereo,cageXYZ,cageScale,histo,color,juliaBox }
+enum CmdIdent { case none,changeEnd,power,help,reset,undo,showAxes,smooth,smooth2,quant,quant2,saveLoad,palette,stereo,
+    cageXYZ,cageScale,histo,color,juliaBox,equation }
 enum WgEntryKind { case singleFloat,dualFloat,dropDown,option,command,legend,line,string,color,move,gap }
 
 let NONE:Int = -1
 let FontSZ:CGFloat = 20
-let RowHT:CGFloat = 25
+let RowHT:CGFloat = 24
 let GrphSZ:CGFloat = 21
 let TxtYoff:CGFloat = 0
 let Tab1:CGFloat = 5     // graph x1

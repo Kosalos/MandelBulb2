@@ -324,18 +324,20 @@ class Bulb {
     
     //MARK: ==================================
     func smooth() {
-        let commandBuffer = commandQueue.makeCommandBuffer()!
-        let commandEncoder = commandBuffer.makeComputeCommandEncoder()!
-        
-        commandEncoder.setComputePipelineState(pipeLineSmooth)
-        commandEncoder.setBuffer(mBuffer,  offset: 0, index: 0)
-        commandEncoder.setBuffer(mBuffer2, offset: 0, index: 1)
-        commandEncoder.dispatchThreadgroups(threadGroups, threadsPerThreadgroup: threadGroupCount)
-        commandEncoder.endEncoding()
-        commandBuffer.commit()
-        commandBuffer.waitUntilCompleted()
-        
-        memcpy(mBuffer.contents(),mBuffer2.contents(),MAP3DSIZE)
+        func smoothSession(_ index1:Int, _ index2:Int) {
+            let commandBuffer = commandQueue.makeCommandBuffer()!
+            let commandEncoder = commandBuffer.makeComputeCommandEncoder()!
+            commandEncoder.setComputePipelineState(pipeLineSmooth)
+            commandEncoder.setBuffer(mBuffer,  offset: 0, index: index1)
+            commandEncoder.setBuffer(mBuffer2, offset: 0, index: index2)
+            commandEncoder.dispatchThreadgroups(threadGroups, threadsPerThreadgroup: threadGroupCount)
+            commandEncoder.endEncoding()
+            commandBuffer.commit()
+            commandBuffer.waitUntilCompleted()
+        }
+
+        smoothSession(0,1)
+        smoothSession(1,0)
     }
     
     func quantize() {
@@ -440,6 +442,7 @@ class Bulb {
             return
         }
         
+        dynamicSourceCode()
         busyCode = .idle
     }
 }
