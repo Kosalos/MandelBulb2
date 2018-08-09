@@ -6,8 +6,28 @@ using namespace metal;
 
 #define MAX_ITERATIONS 40
 #define NUM_CLOUD 8
-#define JULIA_FORMULA 5
-#define BOX_FORMULA 6
+#define JULIA_FORMULA  5
+#define BOX_FORMULA    6
+#define QJULIA_FORMULA 7
+
+//float4 quaternionMultiply(float4 a,float4 b) {  // x = real; y,z,w = i,j,k
+//    float4 ans;
+//    ans.x = a.x * b.x - a.y * b.y - a.z * b.z - a.w * b.w;
+//    ans.y = a.x * b.y + a.y * b.x + a.z * b.w - a.w * b.z;
+//    ans.z = a.x * b.z - a.z * b.w + a.z * b.x + a.w * b.z;
+//    ans.w = a.x * b.w + a.y * b.z - a.z * b.y + a.w * b.x;
+//    return ans;
+//}
+
+float4 quaternionSquare(float4 a) {  // x = real; y,z,w = i,j,k
+    float temp = a.x * 2;
+    float4 ans;
+    ans.x = a.x * a.x - a.y * a.y - a.z * a.z - a.w * a.w;
+    ans.y = a.y * temp;
+    ans.z = a.z * temp;
+    ans.w = a.w * temp;
+    return ans;
+}
 
 kernel void mapShader
 (
@@ -30,7 +50,7 @@ kernel void mapShader
     float fpy = float(pp.y) + offset;
     float fpz = float(pp.z) + offset;
 
-    // 5 Julia ---------------------------------------------------------------------------
+    // ---------------------------------------------------------------------------
     if (control.formula == JULIA_FORMULA) {
         float re,im,mult,zoom;
         
@@ -63,10 +83,41 @@ kernel void mapShader
         return;
     }
     
+    // ---------------------------------------------------------------------------
     float3 w;
     w.x = control.basex + fpx * control.scale;
     w.y = control.basey + fpy * control.scale;
     w.z = control.basez + fpz * control.scale;
+    
+    // ---------------------------------------------------------------------------
+    if (control.formula == QJULIA_FORMULA) {
+        float4 q = float4();
+        float4 c;
+        
+        c.x = control.re1;
+        c.y = control.re2;
+        c.z = control.im1;
+        c.w = control.im2;
+        
+        q.x = w.z;
+        q.y = control.mult1;
+        q.z = w.x;
+        q.w = w.y;
+        
+        for(;;) {
+            q = quaternionSquare(q);
+            q += c;
+            if(q.x > 4) break;
+            if(++iter == MAX_ITERATIONS) {
+                iter = 255;
+                break;
+            }
+        }
+        
+        if(iter == MAX_ITERATIONS) iter = 0;
+        d = iter;
+        return;
+    }
     
     // 0 Bulb 1 --------------------------------------------------------------------------------
     if (control.formula == 0) { // https://github.com/jtauber/mandelbulb/blob/master/mandel8.py

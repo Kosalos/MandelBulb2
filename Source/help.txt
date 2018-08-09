@@ -75,6 +75,14 @@ Julia -----------
     of the last Julia set.
     All interior Jula sets linearly interpolate between these two.
 
+Q Julia -----------
+    Not shown in the legend, when you select the Q Julia formula
+    this region holds three controls:
+    "P 1,2", "P 3,4" and "P 5".
+    You are specifiying the Constant parameter to the
+    Quaternion Julia Set equation, along with a portion
+    of the initial seed value.
+
 P.  Reset parameters back to MandelBulb formula #1.
 Q.  VERY Limited Undo.
     You can only undo the most recent 'Calc'.

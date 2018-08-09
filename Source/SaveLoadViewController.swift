@@ -17,7 +17,8 @@ let bColors:[UIColor] = [
     UIColor(red:0.4, green:0.2, blue:0.1, alpha:1),
     UIColor(red:0.5, green:0.1, blue:0.0, alpha:1),
     UIColor(red:0.8, green:0.4, blue:0.1, alpha:1),     // julia
-    UIColor(red:0.3, green:0.6, blue:0.2, alpha:1)      // box
+    UIColor(red:0.3, green:0.6, blue:0.2, alpha:1),     // box
+    UIColor(red:0.6, green:0.3, blue:0.6, alpha:1)      // Q julia
 ]
 
 class SaveLoadViewController: UIViewController,UITableViewDataSource, UITableViewDelegate,SLCellDelegate {
@@ -41,9 +42,10 @@ class SaveLoadViewController: UIViewController,UITableViewDataSource, UITableVie
         }
         else {
             switch Int(cc.formula) {
-            case JULIA_FORMULA : str = String(format:"%2d   Julia %@",index,dateString)
-            case BOX_FORMULA :   str = String(format:"%2d   Box %@",index,dateString)
-            default :            str = String(format:"%2d   Bulb %d, %@", index,cc.formula + 1,dateString)
+            case JULIA_FORMULA :  str = String(format:"%2d   Julia %@",index,dateString)
+            case BOX_FORMULA :    str = String(format:"%2d   Box %@",index,dateString)
+            case QJULIA_FORMULA : str = String(format:"%2d   Q Julia %@",index,dateString)
+            default :             str = String(format:"%2d   Bulb %d, %@", index,cc.formula + 1,dateString)
             }
         }
         

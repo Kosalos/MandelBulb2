@@ -248,7 +248,7 @@ class WidgetGroup: UIView {
         py += RowHT
     }
     
-    func baseYCoord() -> CGFloat { return 5 } //  zorro (vc.view.bounds.height - 800) / 2 }
+    func baseYCoord() -> CGFloat { return 5 } 
     
     override func draw(_ rect: CGRect) {
         if vc == nil { return }

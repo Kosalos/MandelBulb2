@@ -15,6 +15,7 @@ var vc:ViewController! = nil
 
 let JULIA_FORMULA = 5
 let BOX_FORMULA = 6
+let QJULIA_FORMULA = 7
 
 class ViewController: UIViewController, WGDelegate {
     @IBOutlet var mtkViewL: MTKView!
@@ -32,13 +33,13 @@ class ViewController: UIViewController, WGDelegate {
     var controlCenter = Float()
     var controlSpread = Float()
     var stereoFlag:Bool = false
-
+    
     //MARK:-
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         vc = self
-
+        
         gDevice = MTLCreateSystemDefaultDevice()
         mtkViewL.device = gDevice
         mtkViewR.device = gDevice
@@ -47,15 +48,15 @@ class ViewController: UIViewController, WGDelegate {
         rendererL = newRenderer
         rendererL.mtkView(mtkViewL, drawableSizeWillChange: mtkViewL.drawableSize)
         mtkViewL.delegate = rendererL
-
+        
         guard let newRenderer2 = Renderer(metalKitView: mtkViewR, 1) else { fatalError("Renderer cannot be initialized") }
         rendererR = newRenderer2
         rendererR.mtkView(mtkViewR, drawableSizeWillChange: mtkViewR.drawableSize)
         mtkViewR.delegate = rendererR
-
+        
         hv = histogramView
         layoutViews()
-
+        
         Timer.scheduledTimer(withTimeInterval:0.01, repeats:true) { timer in self.paceTimerHandler() }
         
         let swipeUp = UISwipeGestureRecognizer(target: self, action: #selector(self.handleGesture(gesture:)))
@@ -87,11 +88,11 @@ class ViewController: UIViewController, WGDelegate {
     
     //MARK: -
     
-    let eOptions:[String] = [ "Bulb 1","Bulb 2","Bulb 3","Bulb 4","Bulb 5","Julia","Box" ]
+    let eOptions:[String] = [ "Bulb 1","Bulb 2","Bulb 3","Bulb 4","Bulb 5","Julia","Box","Q Julia" ]
     let pOptions:[String] = [ "PtSz 1","PtSz 2","PtSz 4","PtSz 8" ]
     let cOptions:[String] = [ "#Clouds 1","#Clouds 2","#Clouds 4" ]
     var chgScale:Float = 1
-
+    
     func initializeWidgetGroup() {
         wg.reset()
         wg.addOptionSelect(1,"Equation","Select Equation Type",eOptions);
@@ -106,27 +107,27 @@ class ViewController: UIViewController, WGDelegate {
         
         if control.formula != JULIA_FORMULA {
             wg.addColor(3,Float(RowHT)); wg.addSingleFloat(&control.basez, -5,5,0.1, "Blue", .cageXYZ)
+            
+            wg.addSingleFloat(&chgScale,0.99,1.01,0.05,"Scale", .cageScale)
+            wg.addCommand("Show Axes",.showAxes)
+            wg.addLine()
+            wg.addOptionSelect(2,"Point Size","Select Point Size",pOptions);
+            wg.addOptionSelect(3,"Cloud Count","Select # Overlapping Clouds",cOptions);
+            
+            wg.addLine()
+            histogramView.frame = CGRect(x:5, y:wg.nextYCoord()+2, width:wgWidth-10, height:44)
+            view.bringSubview(toFront:histogramView)
+            
+            wg.addGap(30)
+            wg.addSingleFloat(&controlCenter,0,40,2,"Center",.histo)
+            wg.addSingleFloat(&controlSpread,0,10,2,"Spread",.histo)
+            wg.addString("",1)
+            
+            wg.addLine()
+            wg.addDualFloat(&controlColorRange,&controlColorOffset,0,256,50,"Color",.color)
+            wg.addCommand("Palette",.palette)
+            wg.addLine()
         }
-        
-        wg.addSingleFloat(&chgScale,0.99,1.01,0.05,"Scale", .cageScale)
-        wg.addCommand("Show Axes",.showAxes)
-        wg.addLine()
-        wg.addOptionSelect(2,"Point Size","Select Point Size",pOptions);
-        wg.addOptionSelect(3,"Cloud Count","Select # Overlapping Clouds",cOptions);
-        
-        wg.addLine()        
-        histogramView.frame = CGRect(x:5, y:wg.nextYCoord()+2, width:wgWidth-10, height:44)
-        view.bringSubview(toFront:histogramView)
-        
-        wg.addGap(30)
-        wg.addSingleFloat(&controlCenter,0,40,2,"Center",.histo)
-        wg.addSingleFloat(&controlSpread,0,10,2,"Spread",.histo)
-        wg.addString("",1)
-        
-        wg.addLine()
-        wg.addDualFloat(&controlColorRange,&controlColorOffset,0,256,50,"Color",.color)
-        wg.addCommand("Palette",.palette)
-        wg.addLine()
         
         if control.formula == JULIA_FORMULA {
             wg.addLegend("Julia")
@@ -137,6 +138,14 @@ class ViewController: UIViewController, WGDelegate {
             wg.addLine()
         }
         
+        if control.formula == QJULIA_FORMULA {
+            wg.addLegend("Q Julia")
+            wg.addDualFloat(UnsafeMutableRawPointer(&control.re1),  UnsafeMutableRawPointer(&control.re2), -1,1,0.5,"P 1,2", .juliaBox)
+            wg.addDualFloat(UnsafeMutableRawPointer(&control.im1),  UnsafeMutableRawPointer(&control.im2), -1,1,0.5,"P 3,4", .juliaBox)
+            wg.addSingleFloat(UnsafeMutableRawPointer(&control.mult1),-1,1,0.5,"P 5", .juliaBox)
+            wg.addLine()
+        }
+        
         if control.formula == BOX_FORMULA {
             wg.addLegend("Box")
             wg.addDualFloat(UnsafeMutableRawPointer(&control.re1),UnsafeMutableRawPointer(&control.im1),0.1,4, 0.3,"B Fold", .juliaBox)
@@ -144,7 +153,7 @@ class ViewController: UIViewController, WGDelegate {
             wg.addDualFloat(UnsafeMutableRawPointer(&control.re2),UnsafeMutableRawPointer(&control.im2),0.1,10, 1,"Scale", .juliaBox)
             wg.addLine()
         }
-
+        
         wg.addCommand("Reset",.reset)
         wg.addCommand("Undo",.undo)
         wg.addCommand("Smooth 1",.smooth)
@@ -157,7 +166,7 @@ class ViewController: UIViewController, WGDelegate {
         wg.addLine()
         wg.setNeedsDisplay()
     }
-
+    
     //MARK: -
     
     func wgCommand(_ cmd:CmdIdent) {
@@ -230,7 +239,7 @@ class ViewController: UIViewController, WGDelegate {
         default : return "noOption"
         }
     }
-        
+    
     func wgOptionSelected(_ ident:Int, _ index:Int) { // callback from popup
         switch(ident) {
         case 1 :    // formula
@@ -254,9 +263,21 @@ class ViewController: UIViewController, WGDelegate {
                 control.zoom1 = 1.266
                 control.re2 = 2.4677
                 control.im2 = 2.52
+            case QJULIA_FORMULA :
+                control.basex = -1.14133
+                control.basey = -1.12
+                control.basez = -1.102
+                control.scale = 0.00800000038
+                control.re1 = 0.0912499353
+                control.im1 = 0.485499978
+                control.mult1 = -0.389624834
+                control.re2 = -0.238750175
+                control.im2 = -0.389999956
+                control.center = 12
+                control.spread = 2
             default : break
             }
-
+            
             bulb.newBusy(.calc)
             
         case 2 :    // pointsize
@@ -293,7 +314,7 @@ class ViewController: UIViewController, WGDelegate {
         
         bulb.calcCages()
     }
-
+    
     //MARK: -
     
     var wgWidth:CGFloat = 0
@@ -301,10 +322,10 @@ class ViewController: UIViewController, WGDelegate {
     @objc func layoutViews() {
         let xs:CGFloat = view.bounds.width
         let ys:CGFloat = view.bounds.height
-
+        
         wgWidth = wg.isHidden ? 0 : 120
         let vxs = xs - wgWidth
-
+        
         if !wg.isHidden { wg.frame = CGRect(x:0, y:0, width:wgWidth, height:view.bounds.height) }
         
         histogramView.isHidden = wg.isHidden
@@ -318,28 +339,28 @@ class ViewController: UIViewController, WGDelegate {
             mtkViewR.isHidden = true
             mtkViewL.frame = CGRect(x:wgWidth, y:0, width:vxs, height:ys)
         }
-
+        
         viewCenter.x = mtkViewL.frame.width/2
         viewCenter.y = mtkViewL.frame.height/2
         arcBall.initialize(Float(mtkViewL.frame.width),Float(mtkViewL.frame.height))
     }
     
     //MARK:-
-
+    
     var viewCenter = CGPoint()
-
+    
     func rotate(_ pt:CGPoint) {
         arcBall.mouseDown(viewCenter)
         arcBall.mouseMove(CGPoint(x:viewCenter.x + pt.x, y:viewCenter.y + pt.y))
     }
-
+    
     @objc func paceTimerHandler() {
         _ = wg.update()
         rotate(paceRotate)
     }
     
     //MARK:-
-
+    
     func controlLoaded() {      // just loaded a saved Control file
         initializeWidgetGroup()
         bulb.newBusy(.calc)
@@ -349,12 +370,12 @@ class ViewController: UIViewController, WGDelegate {
         let pList:[Float] = [ 1,2,4,8 ]
         pointSize = pList[pointSizeIndex]
     }
-
+    
     func updateRenderCloudCount() {
         let cList:[Int] = [ 1,2,4 ]
         cloudCount = cList[cloudCountIndex]
     }
-
+    
     func updateRenderColor() {
         control.range = Int32(controlColorRange)
         control.offset = Int32(controlColorOffset)
@@ -387,11 +408,11 @@ class ViewController: UIViewController, WGDelegate {
         control.offset = 64
         control.range = 128
         control.cloudIndex = 0
-
+        
         bulb.reset();
         undoControl1 = control
         undoControl2 = control
-
+        
         pointSizeIndex = 1
         updateRenderPointSize()
         
@@ -401,7 +422,7 @@ class ViewController: UIViewController, WGDelegate {
         controlColorRange = 128
         controlColorOffset = 128
         updateRenderColor()
-
+        
         controlCenter = 10
         controlSpread = 2
         updateControlCenter()
@@ -410,7 +431,7 @@ class ViewController: UIViewController, WGDelegate {
     }
     
     //MARK:-
-
+    
     let xRange = float2(-100,100)
     let yRange = float2(-100,100)
     let zRange = float2(50,2000)
@@ -433,26 +454,26 @@ class ViewController: UIViewController, WGDelegate {
         default : break
         }
     }
-
+    
     @IBAction func pan2Gesture(_ sender: UIPanGestureRecognizer) {
         let pt = sender.translation(in: self.view)
         let scale:Float = 0.01
         paceRotate.x = CGFloat(fClamp(Float(pt.x) * scale, rRange))
         paceRotate.y = CGFloat(fClamp(Float(pt.y) * scale, rRange))
     }
-
+    
     @IBAction func pan3Gesture(_ sender: UIPanGestureRecognizer) {
         let pt = sender.translation(in: self.view)
         let den = 30 * control.scale / 0.008
         camera.x = fClamp(camera.x + Float(pt.x) / den, xRange)
         camera.y = fClamp(camera.y - Float(pt.y) / den, xRange)
     }
-
+    
     @IBAction func pinchGesture(_ sender: UIPinchGestureRecognizer) {
         let scale = Float(1 + (1-sender.scale) / 10 )
         camera.z = fClamp(camera.z * scale,zRange)
     }
-
+    
     @IBAction func tapGesture(_ sender: UITapGestureRecognizer) { paceRotate.x = 0; paceRotate.y = 0 }
     
     @IBAction func tap2Gesture(_ sender: UITapGestureRecognizer) {
