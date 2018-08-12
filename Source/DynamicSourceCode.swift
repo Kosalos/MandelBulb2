@@ -193,7 +193,7 @@ func dynamicSourceCode() {
         addString("    if(q.x > 4) break;")
         addString("    if(++iter == 100) { break }")
         addString("}")
-    case OCTA_FORMULA :
+    case IFS_FORMULA :
         addString("Octahedra IFS")
         addString(" ")
         addString(String(format:"float3 scale  = float3(%8.5f);",control.re1))

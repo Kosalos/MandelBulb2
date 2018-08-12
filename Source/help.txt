@@ -83,10 +83,12 @@ Q Julia -----------
     Quaternion Julia Set equation, along with a portion
     of the initial seed value, and an equation multiplier.
 
-Octahedra ----------
-    Not shown in the legend, when you select the Octahedra formula
-    this region holds four widgets, controlling the scale, offset,
+IFS ----------
+    Not shown in the legend, when you select the IFS formula
+    this region holds five widgets,
+    controlling which equation type is used, and the scale, offset,
     shift, and two rotation angles.
+    Tap the equation legend to launch the selection dialog.
 
 P.  Reset parameters back to MandelBulb formula #1.
 Q.  VERY Limited Undo.

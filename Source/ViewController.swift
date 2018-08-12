@@ -13,6 +13,8 @@ let bulb = Bulb()
 var camera:float3 = float3(0,0,170)
 var vc:ViewController! = nil
 
+let oeOptions:[String] = [ "Half Tet1","Half Tet2","Full Tet","Cubic","half Octa","Full Octa" ]
+
 class ViewController: UIViewController, WGDelegate {
     @IBOutlet var mtkViewL: MTKView!
     @IBOutlet var mtkViewR: MTKView!
@@ -91,7 +93,7 @@ class ViewController: UIViewController, WGDelegate {
     
     //MARK: -
     
-    let eOptions:[String] = [ "Bulb 1","Bulb 2","Bulb 3","Bulb 4","Bulb 5","Julia","Box","Q Julia","Octahedra" ]
+    let eOptions:[String] = [ "Bulb 1","Bulb 2","Bulb 3","Bulb 4","Bulb 5","Julia","Box","Q Julia","IFS" ]
     let pOptions:[String] = [ "PtSz 1","PtSz 2","PtSz 4","PtSz 8" ]
     let cOptions:[String] = [ "#Clouds 1","#Clouds 2","#Clouds 4" ]
     var chgScale:Float = 1
@@ -105,11 +107,12 @@ class ViewController: UIViewController, WGDelegate {
         }
         
         wg.addLine()
-        wg.addColor(1,Float(RowHT)); wg.addSingleFloat(&control.basex, -5,5,0.1, "Red",  .cageXYZ)
-        wg.addColor(2,Float(RowHT)); wg.addSingleFloat(&control.basey, -5,5,0.1, "Green",.cageXYZ)
+        let v1:Float = -8, v2:Float = 8, v3:Float = 0.3
+        wg.addColor(1,Float(RowHT)); wg.addSingleFloat(&control.basex,v1,v2,v3, "Red",  .cageXYZ)
+        wg.addColor(2,Float(RowHT)); wg.addSingleFloat(&control.basey,v1,v2,v3, "Green",.cageXYZ)
         
         if control.formula != JULIA_FORMULA {
-            wg.addColor(3,Float(RowHT)); wg.addSingleFloat(&control.basez, -5,5,0.1, "Blue", .cageXYZ)
+            wg.addColor(3,Float(RowHT)); wg.addSingleFloat(&control.basez,v1,v2,v3, "Blue", .cageXYZ)
         }
         
         wg.addSingleFloat(&chgScale,0.99,1.01,0.05,"Scale", .cageScale)
@@ -153,8 +156,8 @@ class ViewController: UIViewController, WGDelegate {
             wg.addDualFloat(UnsafeMutableRawPointer(&control.mult1),UnsafeMutableRawPointer(&control.zoom1),0.1,4, 0.3,"S Fold", .juliaBox)
             wg.addDualFloat(UnsafeMutableRawPointer(&control.re2),UnsafeMutableRawPointer(&control.im2),0.1,10, 1,"Scale", .juliaBox)
             wg.addLine()
-        case OCTA_FORMULA :
-            wg.addLegend("Octahedra")
+        case IFS_FORMULA :
+            wg.addOptionSelect(4,"IFS Equation","Select Equation Style",oeOptions);
             let v1:Float = -4, v2:Float = 4, v3:Float = 1
             wg.addDualFloat(UnsafeMutableRawPointer(&control.re1),  UnsafeMutableRawPointer(&control.re2), v1,v2,v3,"Scl/Off", .juliaBox)
             wg.addSingleFloat(UnsafeMutableRawPointer(&control.im1), v1,v2,v3,"Shift", .juliaBox)
@@ -254,6 +257,7 @@ class ViewController: UIViewController, WGDelegate {
         case 1 : return eOptions[Int(control.formula)]
         case 2 : return pOptions[pointSizeIndex]
         case 3 : return cOptions[cloudCountIndex]
+        case 4 : return oeOptions[Int(control.ifsIndex)]
         default : return "noOption"
         }
     }
@@ -294,20 +298,8 @@ class ViewController: UIViewController, WGDelegate {
                 control.im2 = -0.389999956
                 control.center = 12
                 control.spread = 2
-            case OCTA_FORMULA :
-                control.basex = -4.49486065
-                control.basey = -5.08438206
-                control.basez = -5.11302948
-                control.scale = 0.0283175632
-                control.re1 = 1.41791153
-                control.im1 = 0.698500692
-                control.mult1 = 0.517745435
-                control.zoom1 = -0.0255003124
-                control.re2 = 0.386190087
-                control.mult2 = -1.19905496
-                control.zoom2 = -0.586499751
-                control.spread = 2
-                control.offset = 128
+            case IFS_FORMULA :
+                loadIFSDefaultSettings()
             default : break
             }
             
@@ -320,10 +312,120 @@ class ViewController: UIViewController, WGDelegate {
             cloudCountIndex = index
             updateRenderCloudCount()
             bulb.newBusy(.calc)
+        case 4 :    // IFS equation
+            control.ifsIndex = Int32(index)
+            loadIFSDefaultSettings()
+            wg.setNeedsDisplay()
+            bulb.newBusy(.calc)
         default : break
         }
     }
+
+    //MARK: -
     
+    func loadIFSDefaultSettings() {
+        switch Int(control.ifsIndex) {
+        case 0 : // Half Tet1
+            control.basex = -5.50529909
+            control.basey = -6.0948205
+            control.basez = -6.12346792
+            control.scale = 0.0350538194
+            control.re1 = 1.03141177
+            control.im1 = 1.12100089
+            control.mult1 = 0.657745481
+            control.zoom1 = -0.292500138
+            control.re2 = 0.50168997
+            control.mult2 = -0.309054941
+            control.zoom2 = -0.318499744
+            control.center = 10
+            control.spread = 2
+            control.offset = 128
+            control.range = 128
+        case 1 : // Half Tet2
+            control.basex = -4.41710472
+            control.basey = -3.91180563
+            control.basez = -3.54410887
+            control.scale = 0.027799191
+            control.re1 = -1.20458925
+            control.im1 = 0.0612261444
+            control.mult1 = 0.734745502
+            control.zoom1 = -1.78650033
+            control.re2 = -0.455810547
+            control.mult2 = 0.320944995
+            control.zoom2 = 1.64700031
+            control.center = 2
+            control.spread = 2
+            control.offset = 128
+            control.range = 128
+        case 2 : // Full Tet
+            control.basex = -7.01420116
+            control.basey = -5.96500015
+            control.basez = -5.34282541
+            control.scale = 0.0373393223
+            control.re1 = -1.63158834
+            control.im1 = 1.12100089
+            control.mult1 = 0.780245482
+            control.zoom1 = 0.507999897
+            control.re2 = 0.267190039
+            control.mult2 = -0.150054947
+            control.zoom2 = -0.786999702
+            control.center = 10
+            control.spread = 2
+            control.offset = 128
+            control.range = 128
+        case 3 : // cubic
+            control.basex = -5.50529909
+            control.basey = -6.0948205
+            control.basez = -6.12346792
+            control.scale = 0.0350538194
+            control.re1 = 1.12741172
+            control.im1 = 1.83650088
+            control.mult1 = 1.6752454
+            control.zoom1 = -0.0265000463
+            control.re2 = 1.17418993
+            control.mult2 = -0.584054947
+            control.zoom2 = -0.318499833
+            control.center = 15
+            control.spread = 2
+            control.offset = 128
+            control.range = 128
+        case 4 : // half octa
+            control.basex = -5.50529909
+            control.basey = -6.0948205
+            control.basez = -6.12346792
+            control.scale = 0.0350538194
+            control.re1 = -1.80258822
+            control.im1 = 1.09200096
+            control.mult1 = -0.0567545593
+            control.zoom1 = 0.569999814
+            control.re2 = 0.573689878
+            control.mult2 = -0.288055122
+            control.zoom2 = -0.467999756
+            control.center = 4
+            control.spread = 2
+            control.offset = 128
+            control.range = 128
+        default : // full octa
+            control.basex = -5.50529909
+            control.basey = -6.0948205
+            control.basez = -6.12346792
+            control.scale = 0.0350538194
+            control.re1 = 1.31841183
+            control.im1 = 1.12100089
+            control.mult1 = 0.657745481
+            control.zoom1 = -0.292500138
+            control.re2 = 0.942689955
+            control.mult2 = -0.309054941
+            control.zoom2 = -0.318499744
+            control.center = 10
+            control.spread = 2
+            control.offset = 128
+            control.range = 128
+        }
+    }
+    
+    //MARK: -
+
     func changeScale(_ ns:Float) {
         let sMin:Float = 0.00001
         let sMax:Float = 0.07

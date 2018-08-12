@@ -7,7 +7,7 @@
 #define JULIA_FORMULA  5
 #define BOX_FORMULA    6
 #define QJULIA_FORMULA 7
-#define OCTA_FORMULA   8
+#define IFS_FORMULA   8
 
 #define VMAX  int((255000000 / sizeof(TVertex)) - 10000)
 
@@ -37,7 +37,7 @@ typedef struct {
     int offset;
     int range;
     int unused1;
-    int unused2;
+    int ifsIndex;
     int cloudIndex;
 } Control;
 

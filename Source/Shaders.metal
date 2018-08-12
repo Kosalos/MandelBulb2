@@ -147,7 +147,8 @@ kernel void mapShader
     
     // ---------------------------------------------------------------------------
     // http://hirnsohle.de/test/fractalLab/
-    if (control.formula == OCTA_FORMULA) {
+    // http://www.fractalforums.com/sierpinski-gasket/kaleidoscopic-(escape-time-ifs)/
+    if (control.formula == IFS_FORMULA) {
         float3 scale  = float3(control.re1);
         float3 offset = float3(control.re2);
         float3 shift  = float3(control.im1);
@@ -158,11 +159,43 @@ kernel void mapShader
             w = rotateXZ(w,control.mult2);
             
             w = abs(w + shift) - shift;
-            
-            // Octahedral
-            if (w.x < w.y) w.xy = w.yx;
-            if (w.x < w.z) w.xz = w.zx;
-            if (w.y < w.z) w.yz = w.zy;
+
+            switch(control.ifsIndex) {
+                case 0 : // half1 tetrahedral
+                    if (w.x + w.y < 0) { float t = -w.y; w.y = -w.x; w.x = t; }
+                    if (w.x + w.z < 0) { float t = -w.z; w.z = -w.x; w.x = t; }
+                    if (w.y + w.z < 0) { float t = -w.z; w.z = -w.y; w.y = t; }
+                    break;
+                case 1 : // half2 tetrahedral
+                    if (w.x < w.y) w.xy = w.yx;
+                    if (w.x < w.z) w.xz = w.zx;
+                    if (w.y < w.z) w.yz = w.zy;
+                    break;
+                case 2 : // full tetrahedral
+                    if (w.x < w.y) w.xy = w.yx;
+                    if (w.x < w.z) w.xz = w.zx;
+                    if (w.y < w.z) w.yz = w.zy;
+                    if (w.x + w.y < 0) { float t = -w.y; w.y = -w.x; w.x = t; }
+                    if (w.x + w.z < 0) { float t = -w.z; w.z = -w.x; w.x = t; }
+                    if (w.y + w.z < 0) { float t = -w.z; w.z = -w.y; w.y = t; }
+                    break;
+                case 3 : // cubic
+                    w.x = abs(w.x);
+                    w.y = abs(w.y);
+                    w.z = abs(w.z);
+                    break;
+                case 4 : // half Octahedral
+                    if (w.x < w.y) w.xy = w.yx;
+                    if (w.x + w.y < 0) { float t = -w.y; w.y = -w.x; w.x = t; }
+                    if (w.x < w.z) w.xz = w.zx;
+                    if (w.x + w.z < 0) { float t = -w.z; w.z = -w.x; w.x = t; }
+                    break;
+                default : // Octahedral
+                    if (w.x < w.y) w.xy = w.yx;
+                    if (w.x < w.z) w.xz = w.zx;
+                    if (w.y < w.z) w.yz = w.zy;
+                    break;
+            }
             
             w = rotateXY(w,control.zoom1);  // fractalRotation2
             w = rotateXZ(w,control.zoom2);
