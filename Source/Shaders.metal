@@ -6,9 +6,6 @@ using namespace metal;
 
 #define MAX_ITERATIONS 40
 #define NUM_CLOUD 8
-#define JULIA_FORMULA  5
-#define BOX_FORMULA    6
-#define QJULIA_FORMULA 7
 
 float4 quaternionMultiply(float4 a,float4 b) {  // x = real; y,z,w = i,j,k
     float4 ans;
@@ -28,6 +25,35 @@ float4 quaternionSquare(float4 a) {  // x = real; y,z,w = i,j,k
     ans.w = a.w * temp;
     return ans;
 }
+
+float3 rotateXY(float3 pos, float angle) {
+    float ss = sin(angle);
+    float cc = cos(angle);
+    float qt = pos.x;
+    pos.x = pos.x * cc - pos.y * ss;
+    pos.y =    qt * ss + pos.y * cc;
+    return pos;
+}
+
+float3 rotateXZ(float3 pos, float angle) {
+    float ss = sin(angle);
+    float cc = cos(angle);
+    float qt = pos.x;
+    pos.x = pos.x * cc - pos.z * ss;
+    pos.z =    qt * ss + pos.z * cc;
+    return pos;
+}
+
+//float3 rotateYZ(float3 pos, float angle) {
+//    float ss = sin(angle);
+//    float cc = cos(angle);
+//    float qt = pos.y;
+//    pos.y = pos.y * cc - pos.z * ss;
+//    pos.z =    qt * ss + pos.z * cc;
+//    return pos;
+//}
+
+//MARK: -
 
 kernel void mapShader
 (
@@ -119,9 +145,44 @@ kernel void mapShader
         return;
     }
     
+    // ---------------------------------------------------------------------------
+    // http://hirnsohle.de/test/fractalLab/
+    if (control.formula == OCTA_FORMULA) {
+        float3 scale  = float3(control.re1);
+        float3 offset = float3(control.re2);
+        float3 shift  = float3(control.im1);
+        float3 scale_offset = offset * (scale - 1);
+        
+        for(;;) {
+            w = rotateXY(w,control.mult1);  // fractalRotation1
+            w = rotateXZ(w,control.mult2);
+            
+            w = abs(w + shift) - shift;
+            
+            // Octahedral
+            if (w.x < w.y) w.xy = w.yx;
+            if (w.x < w.z) w.xz = w.zx;
+            if (w.y < w.z) w.yz = w.zy;
+            
+            w = rotateXY(w,control.zoom1);  // fractalRotation2
+            w = rotateXZ(w,control.zoom2);
+            
+            w *= scale;
+            w -= scale_offset;
+            
+            if(length(w) > 4) break;
+            if(++iter == 40) break;
+        }
+        
+        if(iter == MAX_ITERATIONS) iter = 0;
+        d = iter;
+        return;
+    }
+    
     // 0 Bulb 1 --------------------------------------------------------------------------------
-    if (control.formula == 0) { // https://github.com/jtauber/mandelbulb/blob/master/mandel8.py
-        float r,theta,phi,pwr,ss,dist;
+    // https://github.com/jtauber/mandelbulb/blob/master/mandel8.py
+    if (control.formula == 0) {
+        float r,theta,phi,pwr,ss;
         
         for(;;) {
             if(++iter == MAX_ITERATIONS) break;
@@ -136,8 +197,7 @@ kernel void mapShader
             w.y += pwr * ss * sin(phi * control.power);
             w.z += pwr * cos(theta * control.power);
 
-            dist = w.x * w.x + w.y * w.y + w.z * w.z;
-            if(dist > 4) break;
+            if(length(w) > 4) break;
         }
         
         if(iter == MAX_ITERATIONS) iter = 0;

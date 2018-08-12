@@ -13,10 +13,6 @@ let bulb = Bulb()
 var camera:float3 = float3(0,0,170)
 var vc:ViewController! = nil
 
-let JULIA_FORMULA = 5
-let BOX_FORMULA = 6
-let QJULIA_FORMULA = 7
-
 class ViewController: UIViewController, WGDelegate {
     @IBOutlet var mtkViewL: MTKView!
     @IBOutlet var mtkViewR: MTKView!
@@ -95,7 +91,7 @@ class ViewController: UIViewController, WGDelegate {
     
     //MARK: -
     
-    let eOptions:[String] = [ "Bulb 1","Bulb 2","Bulb 3","Bulb 4","Bulb 5","Julia","Box","Q Julia" ]
+    let eOptions:[String] = [ "Bulb 1","Bulb 2","Bulb 3","Bulb 4","Bulb 5","Julia","Box","Q Julia","Octahedra" ]
     let pOptions:[String] = [ "PtSz 1","PtSz 2","PtSz 4","PtSz 8" ]
     let cOptions:[String] = [ "#Clouds 1","#Clouds 2","#Clouds 4" ]
     var chgScale:Float = 1
@@ -136,30 +132,36 @@ class ViewController: UIViewController, WGDelegate {
         wg.addCommand("Palette",.palette)
         wg.addLine()
         
-        if control.formula == JULIA_FORMULA {
+        switch control.formula {
+        case JULIA_FORMULA :
             wg.addLegend("Julia")
             wg.addDualFloat(UnsafeMutableRawPointer(&control.re1),  UnsafeMutableRawPointer(&control.re2), -4,4,1,"Real", .juliaBox)
             wg.addDualFloat(UnsafeMutableRawPointer(&control.im1),  UnsafeMutableRawPointer(&control.im2), -4,4,1,"Imag", .juliaBox)
             wg.addDualFloat(UnsafeMutableRawPointer(&control.mult1),UnsafeMutableRawPointer(&control.mult2),-3,3, 0.25,"Mult", .juliaBox)
             wg.addDualFloat(UnsafeMutableRawPointer(&control.zoom1),UnsafeMutableRawPointer(&control.zoom2),20,500,100,"Zoom", .juliaBox)
             wg.addLine()
-        }
-        
-        if control.formula == QJULIA_FORMULA {
+        case QJULIA_FORMULA :
             wg.addLegend("Q Julia")
             wg.addDualFloat(UnsafeMutableRawPointer(&control.re1),  UnsafeMutableRawPointer(&control.re2), -1,1,0.5,"P 1,2", .juliaBox)
             wg.addDualFloat(UnsafeMutableRawPointer(&control.im1),  UnsafeMutableRawPointer(&control.im2), -1,1,0.5,"P 3,4", .juliaBox)
             wg.addSingleFloat(UnsafeMutableRawPointer(&control.mult1),-1,1,0.5,"P 5", .juliaBox)
             wg.addSingleFloat(UnsafeMutableRawPointer(&control.mult2),-3,3,1,"P 6", .juliaBox)
             wg.addLine()
-        }
-        
-        if control.formula == BOX_FORMULA {
+        case BOX_FORMULA :
             wg.addLegend("Box")
             wg.addDualFloat(UnsafeMutableRawPointer(&control.re1),UnsafeMutableRawPointer(&control.im1),0.1,4, 0.3,"B Fold", .juliaBox)
             wg.addDualFloat(UnsafeMutableRawPointer(&control.mult1),UnsafeMutableRawPointer(&control.zoom1),0.1,4, 0.3,"S Fold", .juliaBox)
             wg.addDualFloat(UnsafeMutableRawPointer(&control.re2),UnsafeMutableRawPointer(&control.im2),0.1,10, 1,"Scale", .juliaBox)
             wg.addLine()
+        case OCTA_FORMULA :
+            wg.addLegend("Octahedra")
+            let v1:Float = -4, v2:Float = 4, v3:Float = 1
+            wg.addDualFloat(UnsafeMutableRawPointer(&control.re1),  UnsafeMutableRawPointer(&control.re2), v1,v2,v3,"Scl/Off", .juliaBox)
+            wg.addSingleFloat(UnsafeMutableRawPointer(&control.im1), v1,v2,v3,"Shift", .juliaBox)
+            wg.addDualFloat(UnsafeMutableRawPointer(&control.mult1),  UnsafeMutableRawPointer(&control.mult2), v1,v2,v3,"Rot 1", .juliaBox)
+            wg.addDualFloat(UnsafeMutableRawPointer(&control.zoom1),  UnsafeMutableRawPointer(&control.zoom2), v1,v2,v3,"Rot 2", .juliaBox)
+            wg.addLine()
+        default : break
         }
         
         wg.addCommand("Reset",.reset)
@@ -262,7 +264,7 @@ class ViewController: UIViewController, WGDelegate {
             control.formula = Int32(index)
             initializeWidgetGroup()
             
-            switch(index) {
+            switch(Int32(index)) {
             case JULIA_FORMULA :
                 control.re1 = -2.17020011
                 control.re2 = -0.0822001174
@@ -292,6 +294,20 @@ class ViewController: UIViewController, WGDelegate {
                 control.im2 = -0.389999956
                 control.center = 12
                 control.spread = 2
+            case OCTA_FORMULA :
+                control.basex = -4.49486065
+                control.basey = -5.08438206
+                control.basez = -5.11302948
+                control.scale = 0.0283175632
+                control.re1 = 1.41791153
+                control.im1 = 0.698500692
+                control.mult1 = 0.517745435
+                control.zoom1 = -0.0255003124
+                control.re2 = 0.386190087
+                control.mult2 = -1.19905496
+                control.zoom2 = -0.586499751
+                control.spread = 2
+                control.offset = 128
             default : break
             }
             

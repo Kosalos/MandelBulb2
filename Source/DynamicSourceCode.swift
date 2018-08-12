@@ -6,7 +6,7 @@ func dynamicSourceCode() {
     
     func addString(_ str:String) { s += str; s += "\n" }
     
-    switch Int(control.formula) {
+    switch control.formula {
     case 0 :
         addString("MandelBulb Equation #1")
         addString(" ")
@@ -192,6 +192,32 @@ func dynamicSourceCode() {
         addString("    q += c;")
         addString("    if(q.x > 4) break;")
         addString("    if(++iter == 100) { break }")
+        addString("}")
+    case OCTA_FORMULA :
+        addString("Octahedra IFS")
+        addString(" ")
+        addString(String(format:"float3 scale  = float3(%8.5f);",control.re1))
+        addString(String(format:"float3 offset = float3(%8.5f);",control.re2))
+        addString(String(format:"float3 shift  = float3(%8.5f);",control.im1))
+        addString("float3 scale_offset = offset * (scale - 1);")
+        addString(" ")
+        addString("for(;;) {")
+        addString(String(format:"    w = rotateXY(w,%8.5f);",control.mult1))
+        addString(String(format:"    w = rotateXZ(w,%8.5f);",control.mult2))
+        addString(" ")
+        addString("    w = abs(w + shift) - shift;")
+        addString(" ")
+        addString("    if (w.x < w.y) w.xy = w.yx;")
+        addString("    if (w.x < w.z) w.xz = w.zx;")
+        addString("    if (w.y < w.z) w.yz = w.zy;")
+        addString(" ")
+        addString(String(format:"    w = rotateXY(w,%8.5f);",control.zoom1))
+        addString(String(format:"    w = rotateXZ(w,%8.5f);",control.zoom2))
+        addString(" ")
+        addString("    w *= scale;")
+        addString("    w -= scale_offset;")
+        addString("    if(length(w) > 4) break;")
+        addString("    if(++iter == 40) break;")
         addString("}")
     default : break
     }

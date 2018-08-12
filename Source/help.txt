@@ -83,6 +83,11 @@ Q Julia -----------
     Quaternion Julia Set equation, along with a portion
     of the initial seed value, and an equation multiplier.
 
+Octahedra ----------
+    Not shown in the legend, when you select the Octahedra formula
+    this region holds four widgets, controlling the scale, offset,
+    shift, and two rotation angles.
+
 P.  Reset parameters back to MandelBulb formula #1.
 Q.  VERY Limited Undo.
     You can only undo the most recent 'Calc'.
