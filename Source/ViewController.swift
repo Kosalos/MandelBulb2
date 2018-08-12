@@ -13,7 +13,7 @@ let bulb = Bulb()
 var camera:float3 = float3(0,0,170)
 var vc:ViewController! = nil
 
-let oeOptions:[String] = [ "Half Tet1","Half Tet2","Full Tet","Cubic","half Octa","Full Octa" ]
+let oeOptions:[String] = [ "Half Tet1","Half Tet2","Full Tet","Cubic","half Octa","Full Octa","Kaleido" ]
 
 class ViewController: UIViewController, WGDelegate {
     @IBOutlet var mtkViewL: MTKView!
@@ -158,7 +158,7 @@ class ViewController: UIViewController, WGDelegate {
             wg.addLine()
         case IFS_FORMULA :
             wg.addOptionSelect(4,"IFS Equation","Select Equation Style",oeOptions);
-            let v1:Float = -4, v2:Float = 4, v3:Float = 1
+            let v1:Float = -6, v2:Float = 6, v3:Float = 1
             wg.addDualFloat(UnsafeMutableRawPointer(&control.re1),  UnsafeMutableRawPointer(&control.re2), v1,v2,v3,"Scl/Off", .juliaBox)
             wg.addSingleFloat(UnsafeMutableRawPointer(&control.im1), v1,v2,v3,"Shift", .juliaBox)
             wg.addDualFloat(UnsafeMutableRawPointer(&control.mult1),  UnsafeMutableRawPointer(&control.mult2), v1,v2,v3,"Rot 1", .juliaBox)
@@ -324,6 +324,10 @@ class ViewController: UIViewController, WGDelegate {
     //MARK: -
     
     func loadIFSDefaultSettings() {
+        control.spread = 2
+        control.offset = 128
+        control.range = 128
+        
         switch Int(control.ifsIndex) {
         case 0 : // Half Tet1
             control.basex = -5.50529909
@@ -338,9 +342,6 @@ class ViewController: UIViewController, WGDelegate {
             control.mult2 = -0.309054941
             control.zoom2 = -0.318499744
             control.center = 10
-            control.spread = 2
-            control.offset = 128
-            control.range = 128
         case 1 : // Half Tet2
             control.basex = -4.41710472
             control.basey = -3.91180563
@@ -354,9 +355,6 @@ class ViewController: UIViewController, WGDelegate {
             control.mult2 = 0.320944995
             control.zoom2 = 1.64700031
             control.center = 2
-            control.spread = 2
-            control.offset = 128
-            control.range = 128
         case 2 : // Full Tet
             control.basex = -7.01420116
             control.basey = -5.96500015
@@ -370,9 +368,6 @@ class ViewController: UIViewController, WGDelegate {
             control.mult2 = -0.150054947
             control.zoom2 = -0.786999702
             control.center = 10
-            control.spread = 2
-            control.offset = 128
-            control.range = 128
         case 3 : // cubic
             control.basex = -5.50529909
             control.basey = -6.0948205
@@ -386,9 +381,6 @@ class ViewController: UIViewController, WGDelegate {
             control.mult2 = -0.584054947
             control.zoom2 = -0.318499833
             control.center = 15
-            control.spread = 2
-            control.offset = 128
-            control.range = 128
         case 4 : // half octa
             control.basex = -5.50529909
             control.basey = -6.0948205
@@ -402,10 +394,7 @@ class ViewController: UIViewController, WGDelegate {
             control.mult2 = -0.288055122
             control.zoom2 = -0.467999756
             control.center = 4
-            control.spread = 2
-            control.offset = 128
-            control.range = 128
-        default : // full octa
+        case 5 : // full octa
             control.basex = -5.50529909
             control.basey = -6.0948205
             control.basez = -6.12346792
@@ -418,9 +407,19 @@ class ViewController: UIViewController, WGDelegate {
             control.mult2 = -0.309054941
             control.zoom2 = -0.318499744
             control.center = 10
-            control.spread = 2
-            control.offset = 128
-            control.range = 128
+        default : // Kaleido
+            control.basex = -1.0784421
+            control.basey = -1.25651312
+            control.basez = -1.69661307
+            control.scale = 0.00554144336
+            control.re1 = -1.21631932
+            control.im1 = 0.931500792
+            control.mult1 = 3.09924626
+            control.zoom1 = -0.0305000525
+            control.re2 = 2.94115138
+            control.mult2 = -1.23205495
+            control.zoom2 = 0.102000162
+            control.center = 8
         }
     }
     

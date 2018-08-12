@@ -154,6 +154,43 @@ kernel void mapShader
         float3 shift  = float3(control.im1);
         float3 scale_offset = offset * (scale - 1);
         
+        if(control.ifsIndex == 6) { // Kaleido
+            float CX = control.im1;
+            float CY = control.im1;
+            float CZ = control.im1;
+            float scl = control.re1;
+            
+            for(;;) {
+                w = rotateXY(w,control.mult1);  // fractalRotation1
+                w = rotateXZ(w,control.mult2);
+
+                w.x = abs(w.x);
+                w.y = abs(w.y);
+                w.z = abs(w.z);
+                if (w.x < w.y) w.xy = w.yx;
+                if (w.x < w.z) w.xz = w.zx;
+                if (w.y < w.z) w.yz = w.zy;
+
+                w.z -= 0.5 * CZ * (scl-1) / scl;
+                w.z = -abs( - w.z);
+                w.z += 0.5 * CZ * (scl-1) / scl;
+
+                w = rotateXY(w,control.zoom1);  // fractalRotation2
+                w = rotateXZ(w,control.zoom2);
+
+                w.x = scl * w.x - CX * (scl-1);
+                w.y = scl * w.y - CY * (scl-1);
+                w.z = scl * w.z;
+
+                if(length(w) > 2) break;
+                if(++iter == 40) break;
+            }
+            
+            if(iter == MAX_ITERATIONS) iter = 0;
+            d = iter;
+            return;
+        }
+        
         for(;;) {
             w = rotateXY(w,control.mult1);  // fractalRotation1
             w = rotateXZ(w,control.mult2);
