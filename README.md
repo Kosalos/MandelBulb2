@@ -11,6 +11,9 @@ Added more IFS based equations. \
 Please visit:  http://www.fractalforums.com/sierpinski-gasket/kaleidoscopic-(escape-time-ifs)/ \
 Half Tet1, Half Tet2, Full Tet, Cubic, half Octa and Full Octa are each very distinctive.
 
+Update: \
+Added Color Editing panel so you can specify which portions of the point cloud are visible.
+
 Uses my new favorite UX control panel, which makes the programmer's job easier, \
 and leaves most of the screen real estate for drawings.
 
