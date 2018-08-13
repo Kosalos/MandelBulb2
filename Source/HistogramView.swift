@@ -70,7 +70,7 @@ class HistogramView: UIView {
             setNeedsDisplay()
 
             vc.wg.setNeedsDisplay() // so #pts is updated
-            //Swift.print("Touched ",pt.x,pt.y,"  cc = ", control.center.description, "  spread =", control.spread.description)
+            vc.pm.bellCurveColorScheme()
         }
     }
     

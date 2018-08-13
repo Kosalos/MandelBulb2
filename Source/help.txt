@@ -49,7 +49,22 @@ G. Histogram View displays the relative number of points at
 H. Position the center of the Histogram active region.
 I. Control the width of the Histogram active region.
 J. The number of points inside the active region.
-K. Controls the points' coloring range and center.
+
+K. ColorEdit
+   Launches the Color Edit panel. (not shown)
+   This panel holds a collection of color bars,
+   each assigned to a point Cloud value.
+
+   Directions for use :
+   1. Tap on a bar to set its color from the palette index
+      indicated by the which part of the bar you tap.
+   2. Tap bar a second time to set its color back to black.
+   3. Drag finger across the panel to set multiple bar colors.
+   4. The "Center" and "Spread" widgets still work as before.
+      If you use them they erase any editing you have done.
+   Note: Drag on the Histogram graph to quickly move the colors.
+   Note: Image is invisible until you set a color bar.
+
 L. Cycle through four color palettes.
 
 Box ------------

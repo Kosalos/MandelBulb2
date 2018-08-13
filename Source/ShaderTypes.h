@@ -1,15 +1,12 @@
-#ifndef ShaderTypes_h
-#define ShaderTypes_h
-
+#pragma once
 #include <simd/simd.h>
 
-#define WIDTH 300 // divisible by threadgroups (20)
-#define JULIA_FORMULA  5
-#define BOX_FORMULA    6
-#define QJULIA_FORMULA 7
-#define IFS_FORMULA   8
-
+#define MAX_ITERATIONS 40
+#define NUM_CLOUD 8
 #define VMAX  int((255000000 / sizeof(TVertex)) - 10000)
+#define WIDTH 300 // divisible by threadgroups (20)
+
+enum { BULB_1,BULB_2,BULB_3,BULB_4,BULB_5,JULIA,BOX,QJULIA,IFS };
 
 typedef struct {
     unsigned char data[WIDTH][WIDTH][WIDTH];
@@ -36,9 +33,13 @@ typedef struct {
     int spread;
     int offset;
     int range;
-    int unused1;
     int ifsIndex;
     int cloudIndex;
+    int param;
+    
+    unsigned char pColor[MAX_ITERATIONS];
+    
+    float future[10];
 } Control;
 
 typedef struct {
@@ -62,5 +63,12 @@ typedef struct {
     vector_float4 color;
 } TVertex;
 
-#endif /* ShaderTypes_h */
+#ifndef __METAL_VERSION__
+
+void setControlPointer(Control *ptr);
+void setPColor(int index, int value);
+int  getPColor(int index);
+void pColorClear(void);
+
+#endif
 

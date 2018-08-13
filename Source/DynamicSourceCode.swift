@@ -1,20 +1,20 @@
 
 func dynamicSourceCode() {
-    if vc.textView.isHidden { return }
+    if vc.tv.isHidden { return }
     
     var s = String()
     
     func addString(_ str:String) { s += str; s += "\n" }
     
-    switch control.formula {
-    case 0 :
+    switch Int(control.formula) {
+    case BULB_1 :
         addString("MandelBulb Equation #1")
         addString(" ")
         addString("float r,theta,phi,pwr,ss,dist;")
         addString("float3 w = current position")
         addString(" ")
         addString("for(;;) {")
-        addString("    if(++iter == 40) { break }")
+        addString("    if(++iter == MAX_ITERATIONS) { break }")
         addString("    r = sqrt(w.x * w.x + w.y * w.y + w.z * w.z);")
         addString("    theta = atan2(sqrt(w.x * w.x + w.y * w.y), w.z);")
         addString("    phi = atan2(w.y,w.x);")
@@ -26,7 +26,7 @@ func dynamicSourceCode() {
         addString("    dist = w.x * w.x + w.y * w.y + w.z * w.z;");
         addString("    if(dist > 4) break;")
         addString("}")
-    case 1 :
+    case BULB_2 :
         addString("MandelBulb Equation #2")
         addString(" ")
         addString("float3 w = current position")
@@ -34,7 +34,7 @@ func dynamicSourceCode() {
         addString("float dz = 1.0;")
         addString(" ")
         addString("for(;;) {")
-        addString("    if(++iter == 40) { break }")
+        addString("    if(++iter == MAX_ITERATIONS) { break }")
         addString("    float m2 = m*m;")
         addString("    float m4 = m2*m2;")
         addString("    dz = 8.0*sqrt(m4*m2*m)*dz + 1.0;")
@@ -56,7 +56,7 @@ func dynamicSourceCode() {
         addString("    m = dot(w,w);")
         addString("    if( m > 4.0 ) break;");
         addString("}")
-    case 2 :
+    case BULB_3 :
         addString("MandelBulb Equation #3")
         addString(" ")
         addString("float3 w = current position")
@@ -64,7 +64,7 @@ func dynamicSourceCode() {
         addString("phi, phi_sin, phi_cos, xxyy;")
         addString(" ")
         addString("for(;;) {")
-        addString("    if(++iter == 40) { break }")
+        addString("    if(++iter == MAX_ITERATIONS) { break }")
         addString("    xxyy = w.x * w.x + w.y * w.y;")
         addString("    magnitude = xxyy + w.z * w.z;")
         addString("    r = sqrt(magnitude);")
@@ -77,7 +77,7 @@ func dynamicSourceCode() {
         addString("    w.y += r_power * sin(theta_power) * phi_cos;")
         addString("    w.z += r_power * sin(phi * control.power);")
         addString("}")
-    case 3 :
+    case BULB_4 :
         addString("MandelBulb Equation #4")
         addString(" ")
         addString("float3 w = current position")
@@ -85,7 +85,7 @@ func dynamicSourceCode() {
         addString("phi, phi_sin, phi_cos, xxyy;")
         addString(" ")
         addString("for(;;) {")
-        addString("    if(++iter == 40) { break }")
+        addString("    if(++iter == MAX_ITERATIONS) { break }")
         addString("    xxyy = w.x * w.x + w.y * w.y;")
         addString("    magnitude = xxyy + w.z * w.z;")
         addString("    r = sqrt(magnitude);")
@@ -98,7 +98,7 @@ func dynamicSourceCode() {
         addString("    w.y += r_power * sin(theta_power) * phi_sin;")
         addString("    w.z += r_power * cos(phi * control.power);")
         addString("}")
-    case 4 :
+    case BULB_5 :
         addString("MandelBulb Equation #5")
         addString(" ")
         addString("float3 w = current position")
@@ -106,7 +106,7 @@ func dynamicSourceCode() {
         addString("phi, phi_sin, phi_cos, xxyy;")
         addString(" ")
         addString("for(;;) {")
-        addString("    if(++iter == 40) { break }")
+        addString("    if(++iter == MAX_ITERATIONS) { break }")
         addString("    xxyy = w.x * w.x + w.y * w.y;")
         addString("    magnitude = xxyy + w.z * w.z;")
         addString("    r = sqrt(magnitude);")
@@ -119,7 +119,7 @@ func dynamicSourceCode() {
         addString("    w.y += r_power * sin(theta_power) * phi_cos;")
         addString("    w.z += r_power * sin(phi*control.power);")
         addString("}")
-    case BOX_FORMULA :
+    case BOX :
         addString("MandelBox Equation")
         addString(" ")
         addString("float3 w = current position")
@@ -133,7 +133,7 @@ func dynamicSourceCode() {
         addString("float ffmm = fr2 / mr2;")
         addString(" ")
         addString("for(;;) {")
-        addString("    if(++iter == 40) { break }")
+        addString("    if(++iter == MAX_ITERATIONS) { break }")
         addString("    if(w.x > fLimit) w.x = fValue - w.x; else if(w.x < -fLimit) w.x = -fValue - w.x;")
         addString("    if(w.y > fLimit) w.y = fValue - w.y; else if(w.y < -fLimit) w.y = -fValue - w.y;")
         addString("    if(w.z > fLimit) w.z = fValue - w.z; else if(w.z < -fLimit) w.z = -fValue - w.z;")
@@ -154,7 +154,7 @@ func dynamicSourceCode() {
         addString("        w.z *= den;")
         addString("    }")
         addString("}")
-    case JULIA_FORMULA :
+    case JULIA :
         addString("Stacked Julia Sets")
         addString(" ")
         addString(String(format:"float re = %8.5f",control.re1))
@@ -169,9 +169,9 @@ func dynamicSourceCode() {
         addString("    newRe = oldRe * oldRe - oldIm * oldIm + re;")
         addString("    newIm = mult * oldRe * oldIm + im;")
         addString("    if((newRe * newRe + newIm * newIm) > 4) break;")
-        addString("    if(++iter == 40) { break }")
+        addString("    if(++iter == MAX_ITERATIONS) { break }")
         addString("}")
-    case QJULIA_FORMULA :
+    case QJULIA :
         addString("Quaternion Julia Set")
         addString(" ")
         addString("float4 q = float4();")
@@ -191,9 +191,9 @@ func dynamicSourceCode() {
         addString(String(format:"    q = quaternionSquare(q) * %8.5f",control.mult2))
         addString("    q += c;")
         addString("    if(q.x > 4) break;")
-        addString("    if(++iter == 100) { break }")
+        addString("    if(++iter == MAX_ITERATIONS) { break }")
         addString("}")
-    case IFS_FORMULA :
+    case IFS :
         addString("Octahedra IFS")
         addString(" ")
         addString(String(format:"float3 scale  = float3(%8.5f);",control.re1))
@@ -217,10 +217,10 @@ func dynamicSourceCode() {
         addString("    w *= scale;")
         addString("    w -= scale_offset;")
         addString("    if(length(w) > 4) break;")
-        addString("    if(++iter == 40) break;")
+        addString("    if(++iter == MAX_ITERATIONS) break;")
         addString("}")
     default : break
     }
     
-    vc.textView.text = s
+    vc.tv.text = s
 }

@@ -42,18 +42,18 @@ class SaveLoadViewController: UIViewController,UITableViewDataSource, UITableVie
             str = "** unused **"
         }
         else {
-            switch cc.formula {
-            case JULIA_FORMULA :  str = String(format:"%2d   Julia %@",index,dateString)
-            case BOX_FORMULA :    str = String(format:"%2d   Box %@",index,dateString)
-            case QJULIA_FORMULA : str = String(format:"%2d   Q Julia %@",index,dateString)
-            case IFS_FORMULA :    str = String(format:"%2d   IFS %@ %@",index,oeOptions[Int(cc.ifsIndex)],dateString)
-            default :             str = String(format:"%2d   Bulb %d, %@", index,cc.formula + 1,dateString)
+            switch Int(cc.formula) {
+            case JULIA:     str = String(format:"%2d   Julia %@",index,dateString)
+            case BOX :      str = String(format:"%2d   Box %@",index,dateString)
+            case QJULIA :   str = String(format:"%2d   Q Julia %@",index,dateString)
+            case IFS :      str = String(format:"%2d   IFS %@ %@",index,oeOptions[Int(cc.ifsIndex)],dateString)
+            default :       str = String(format:"%2d   Bulb %d, %@", index,cc.formula + 1,dateString)
             }
         }
         
         cell.loadCell.setTitle(str, for: UIControlState.normal)
 
-        if Int(cc.formula) == IFS_FORMULA {   // IFS color per equation
+        if Int(cc.formula) == IFS {  // color per equation
             cell.loadCell.backgroundColor = UIColor(red:0.3 + CGFloat(cc.ifsIndex)/12, green:0.6, blue:0.6, alpha:1)
         }
         else {

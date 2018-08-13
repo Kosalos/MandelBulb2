@@ -4,9 +4,6 @@
 
 using namespace metal;
 
-#define MAX_ITERATIONS 40
-#define NUM_CLOUD 8
-
 float4 quaternionMultiply(float4 a,float4 b) {  // x = real; y,z,w = i,j,k
     float4 ans;
     ans.x = a.x * b.x - a.y * b.y - a.z * b.z - a.w * b.w;
@@ -76,8 +73,8 @@ kernel void mapShader
     float fpy = float(pp.y) + offset;
     float fpz = float(pp.z) + offset;
 
-    // ---------------------------------------------------------------------------
-    if (control.formula == JULIA_FORMULA) {
+    //MARK: - JULIA_FORMULA
+    if (control.formula == JULIA) {
         float re,im,mult,zoom;
         
         float ratio = fpz / float(WIDTH-1);
@@ -98,25 +95,20 @@ kernel void mapShader
             newIm = mult * oldRe * oldIm + im;
             
             if((newRe * newRe + newIm * newIm) > 4) break;
-            if(++iter == MAX_ITERATIONS) {
-                iter = 255;
-                break;
-            }
+            if(++iter == MAX_ITERATIONS) break;
         }
-        
-        if(iter == MAX_ITERATIONS) iter = 0;
+
         d = iter;
         return;
     }
     
-    // ---------------------------------------------------------------------------
+    //MARK: - QJULIA_FORMULA
     float3 w;
     w.x = control.basex + fpx * control.scale;
     w.y = control.basey + fpy * control.scale;
     w.z = control.basez + fpz * control.scale;
     
-    // ---------------------------------------------------------------------------
-    if (control.formula == QJULIA_FORMULA) {
+    if (control.formula == QJULIA) {
         float4 q = float4();
         float4 c;
         
@@ -133,22 +125,19 @@ kernel void mapShader
         for(;;) {
             q = quaternionSquare(q) * control.mult2;
             q += c;
+            
             if(q.x > 4) break;
-            if(++iter == 100) { 
-                iter = 255;
-                break;
-            }
+            if(++iter == MAX_ITERATIONS) break;
         }
         
-        if(iter == MAX_ITERATIONS) iter = 0;
         d = iter;
         return;
     }
     
-    // ---------------------------------------------------------------------------
+    //MARK: - IFS_FORMULA
     // http://hirnsohle.de/test/fractalLab/
     // http://www.fractalforums.com/sierpinski-gasket/kaleidoscopic-(escape-time-ifs)/
-    if (control.formula == IFS_FORMULA) {
+    if (control.formula == IFS) {
         float3 scale  = float3(control.re1);
         float3 offset = float3(control.re2);
         float3 shift  = float3(control.im1);
@@ -183,10 +172,9 @@ kernel void mapShader
                 w.z = scl * w.z;
 
                 if(length(w) > 2) break;
-                if(++iter == 40) break;
+                if(++iter == MAX_ITERATIONS) break;
             }
             
-            if(iter == MAX_ITERATIONS) iter = 0;
             d = iter;
             return;
         }
@@ -241,22 +229,19 @@ kernel void mapShader
             w -= scale_offset;
             
             if(length(w) > 4) break;
-            if(++iter == 40) break;
+            if(++iter == MAX_ITERATIONS) break;
         }
-        
-        if(iter == MAX_ITERATIONS) iter = 0;
+
         d = iter;
         return;
     }
     
-    // 0 Bulb 1 --------------------------------------------------------------------------------
+    //MARK: - BULB_1
     // https://github.com/jtauber/mandelbulb/blob/master/mandel8.py
-    if (control.formula == 0) {
+    if (control.formula == BULB_1) {
         float r,theta,phi,pwr,ss;
         
         for(;;) {
-            if(++iter == MAX_ITERATIONS) break;
-            
             r = sqrt(w.x * w.x + w.y * w.y + w.z * w.z);
             theta = atan2(sqrt(w.x * w.x + w.y * w.y), w.z);
             phi = atan2(w.y,w.x);
@@ -268,21 +253,19 @@ kernel void mapShader
             w.z += pwr * cos(theta * control.power);
 
             if(length(w) > 4) break;
+            if(++iter == MAX_ITERATIONS) break;
         }
         
-        if(iter == MAX_ITERATIONS) iter = 0;
         d = iter;
         return;
     }
     
-    // 1 Bulb 2 -----------------------------------------------------------------------------------
-    if (control.formula == 1) { // alternate Bulb
+    //MARK: - BULB_2
+    if (control.formula == BULB_2) {
         float m = dot(w,w);
         float dz = 1.0;
         
         for(;;) {
-            if(++iter == MAX_ITERATIONS) break;
-            
             float m2 = m*m;
             float m4 = m2*m2;
             dz = 8.0*sqrt(m4*m2*m)*dz + 1.0;
@@ -303,17 +286,17 @@ kernel void mapShader
             
             m = dot(w,w);
             if( m > 4.0 ) break;
+            if(++iter == MAX_ITERATIONS) break;
         }
         
-        if(iter == MAX_ITERATIONS) iter = 0;
         d = iter;
         return;
     }
     
     float magnitude, r, theta_power, r_power, phi, phi_sin, phi_cos, xxyy;
     
-    // 2 Bulb 3 -----------------------------------------------------------------------
-    if (control.formula == 2) {
+    //MARK: - BULB_3
+    if (control.formula == BULB_3) {
         for(;;) {
             if(++iter == MAX_ITERATIONS) break;
             
@@ -332,13 +315,12 @@ kernel void mapShader
             w.z += r_power * sin(phi * control.power);
         }
         
-        if(iter == MAX_ITERATIONS) iter = 0;
         d = iter;
         return;
     }
     
-    // 3 Bulb 4 -----------------------------------------------------------------------
-    if (control.formula == 3) {
+    //MARK: - BULB_4
+    if (control.formula == BULB_4) {
         for(;;) {
             if(++iter == MAX_ITERATIONS) break;
 
@@ -357,13 +339,12 @@ kernel void mapShader
             w.z += r_power * cos(phi * control.power);
         }
         
-        if(iter == MAX_ITERATIONS) iter = 0;
         d = iter;
         return;
     }
     
-    // 4 Bulb 5 -----------------------------------------------------------------------
-    if (control.formula == 4) {
+    //MARK: - BULB_5
+    if (control.formula == BULB_5) {
         for(;;) {
             if(++iter == MAX_ITERATIONS) break;
             
@@ -382,12 +363,12 @@ kernel void mapShader
             w.z += r_power * sin(phi*control.power);
         }
         
-        if(iter == MAX_ITERATIONS) iter = 0;
         d = iter;
+        return;
     }
 
-    // 6 Box -----------------------------------------------------------------------
-    if (control.formula == 6) {
+    //MARK: - BOX
+    if (control.formula == BOX) {
         float fLimit  = control.re1;
         float fValue  = control.im1;
         float mRadius = control.mult1;
@@ -422,39 +403,11 @@ kernel void mapShader
                 }
         }
         
-        if(iter < 2 || iter == MAX_ITERATIONS) iter = 0;
         d = iter;
     }
 }
     
-    /*
-     The Mandelbox is a folding fractal, generated by doing box folds and sphere folds.
-     It was discovered by Tom Lowe (Tglad or T’glad on various forums).
-     The folds are actually rather simple, but surprisingly, produce very interesting results.
-     The basic iterative algorithm is:
-     
-     if (point.x > fold_limit) point.x = fold_value – point.x
-     else if (point.x < -fold_limit) point.x = -fold_value – point.x
-     
-     do those two lines for y and z components.
-     
-     length = point.x*point.x + point.y*point.y + point.z*point.z
-     
-     if (length < min_radius*min_radius) multiply point by fixed_radius*fixed_radius / (min_radius*min_radius)
-     else if (length < fixed_radius*fixed_radius) multiply point by fixed_radius*fixed_radius / length
-     
-     multiply point by mandelbox_scale and add position (or constant) to get a new value of point
-     
-     Typically,
-     fold_limit is 1,
-     fold_value is 2,
-     min_radius is 0.5,
-     fixed_radius is 1,
-     and mandelbox_scale can be thought of as a specification of the type of Mandelbox desired.
-     A nice value for that is -1.5 (but it can be positive as well).
-     */
-
-//===================================================================================
+//MARK: -
 // remove totally surrounded points from the cloud by marking them as '255' (not rendered)
 
 kernel void adjacentShader
@@ -490,7 +443,7 @@ kernel void adjacentShader
     src.data[p.x][p.y][p.z] = 255;      // generated zero
 }
 
-//===================================================================================
+//MARK: -
 // set cloud point value to average of neighboring points
 
 #define X 1
@@ -551,7 +504,7 @@ kernel void smoothingShader
     }
 }
 
-//===================================================================================
+//MARK: -
 
 kernel void quantizeShader
 (
@@ -560,14 +513,14 @@ kernel void quantizeShader
  uint3 p [[thread_position_in_grid]])
 {
     device unsigned char &d = src.data[p.x][p.y][p.z];
-    unsigned char mask = (unsigned char)control.unused1;
+    unsigned char mask = (unsigned char)control.param;
     
     if(d > 0 && d < 255) { // only include rendered points
         d = 1 + (d & mask);
     }
 }
 
-//===================================================================================
+//MARK: -
 // histogram[256] = # points of each value in whole cloud
 
 kernel void histogramShader
@@ -583,19 +536,21 @@ kernel void histogramShader
     }
 }
 
-//===================================================================================
+//MARK: -
 
 kernel void verticeShader
 (
- constant Map3D &src [[buffer(0)]],             // source point cloud
- device atomic_uint &counter[[buffer(1)]],      // global value = # vertices in output
- constant Control &control [[buffer(2)]],       // control params from Swift
- constant float3 *color [[buffer(3)]],          // color lookup table[256]
- device TVertex *vertices[[ buffer(4) ]],       // output list of vertices to render
+ constant Map3D &src        [[buffer(0)]], // source point cloud
+ device atomic_uint &counter[[buffer(1)]], // global value = # vertices in output
+ constant Control &control  [[buffer(2)]], // control params from Swift
+ constant float3 *color     [[buffer(3)]], // color lookup table[256]
+ device TVertex *vertices   [[buffer(4)]], // output list of vertices to render
  uint3 p [[thread_position_in_grid]])
 {
     int cIndex = int(src.data[p.x][p.y][p.z]);
-    if(cIndex == 0 || cIndex > 255) return;     // non-rendered point
+    if(cIndex == 0 || cIndex >= 255) return;     // non-rendered point
+    
+    if(control.pColor[cIndex] == 0) return;    // non-rendered value
     
     if(control.hop > 1) {       // 'fast calc' skips most coordinates
         if(int(p.x) % control.hop) return;
@@ -603,8 +558,9 @@ kernel void verticeShader
         if(int(p.z) % control.hop) return;
     }
     
-    if(cIndex < control.center - control.spread) return;
-    if(cIndex > control.center + control.spread) return;
+//
+//    if(cIndex < control.center - control.spread) return;
+//    if(cIndex > control.center + control.spread) return;
     
     uint index = atomic_load(&counter);     // our assigned output vertex index
     if(index >= VMAX) return;
@@ -619,15 +575,16 @@ kernel void verticeShader
     v.pos.y = (float(p.y) - center) / 2;
     v.pos.z = (float(p.z) - center) / 2;
     
-    float diff = float(cIndex - control.center) * float(control.range) / float(1 + control.spread);
-    cIndex = control.center + int(diff) + control.offset;
+//    float diff = float(cIndex - control.center) * float(control.range) / float(1 + control.spread);
+//    cIndex = control.center + int(diff) + control.offset;
+//    
+//    cIndex &= 255;
     
-    cIndex &= 255;
-    
-    v.color = float4(color[cIndex],0.15);
+    cIndex = control.pColor[cIndex]; 
+    v.color = float4(color[cIndex],1);
 }
 
-//===================================================================================
+//MARK: -
 
 struct Transfer {
     float4 position [[position]];

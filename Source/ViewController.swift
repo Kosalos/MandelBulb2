@@ -7,7 +7,6 @@ var undoControl1 = Control()
 var undoControl2 = Control()
 var showAxesFlag = true
 var paceRotate = CGPoint()
-var hv:HistogramView! = nil
 var gDevice: MTLDevice!
 let bulb = Bulb()
 var camera:float3 = float3(0,0,170)
@@ -18,10 +17,11 @@ let oeOptions:[String] = [ "Half Tet1","Half Tet2","Full Tet","Cubic","half Octa
 class ViewController: UIViewController, WGDelegate {
     @IBOutlet var mtkViewL: MTKView!
     @IBOutlet var mtkViewR: MTKView!
-    @IBOutlet var wg: WidgetGroup!
-    @IBOutlet var histogramView: HistogramView!
-    @IBOutlet var textView: UITextView!
     
+    var wg:WidgetGroup! = nil
+    var hv:HistogramView! = nil
+    var pm:PColorView! = nil
+    var tv:UITextView! = nil
     var rendererL: Renderer!
     var rendererR: Renderer!
     
@@ -32,12 +32,18 @@ class ViewController: UIViewController, WGDelegate {
     var controlCenter = Float()
     var controlSpread = Float()
     var stereoFlag:Bool = false
-    
+
     //MARK:-
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setControlPointer(&control)
+        
         vc = self
+        wg = WidgetGroup();     view.addSubview(wg)
+        pm = PColorView();      view.addSubview(pm)
+        hv = HistogramView();   view.addSubview(hv)
+        tv = UITextView();      view.addSubview(tv)
         
         gDevice = MTLCreateSystemDefaultDevice()
         mtkViewL.device = gDevice
@@ -53,9 +59,6 @@ class ViewController: UIViewController, WGDelegate {
         rendererR.mtkView(mtkViewR, drawableSizeWillChange: mtkViewR.drawableSize)
         mtkViewR.delegate = rendererR
         
-        hv = histogramView
-        layoutViews()
-        
         Timer.scheduledTimer(withTimeInterval:0.01, repeats:true) { timer in self.paceTimerHandler() }
         
         let swipeUp = UISwipeGestureRecognizer(target: self, action: #selector(self.handleGesture(gesture:)))
@@ -66,11 +69,14 @@ class ViewController: UIViewController, WGDelegate {
         swipeDown.direction = .down
         self.view.addGestureRecognizer(swipeDown)
         
-        view.bringSubview(toFront:textView)
-        textView.backgroundColor = .clear
-        textView.textColor = .white
-        textView.text = ""
-        textView.isHidden = true
+        view.bringSubview(toFront:tv)
+        tv.backgroundColor = .clear
+        tv.textColor = .white
+        tv.text = ""
+        tv.isHidden = true
+        
+        pm.initialize()
+        layoutViews()
     }
     
     @objc func handleGesture(gesture: UISwipeGestureRecognizer) -> Void {
@@ -102,7 +108,7 @@ class ViewController: UIViewController, WGDelegate {
         wg.reset()
         wg.addOptionSelect(1,"Equation","Select Equation Type",eOptions);
         
-        if control.formula < JULIA_FORMULA { // bulbs
+        if control.formula < JULIA { // bulbs
             wg.addSingleFloat(&control.power,2,12,1,"Power",.power)
         }
         
@@ -111,7 +117,7 @@ class ViewController: UIViewController, WGDelegate {
         wg.addColor(1,Float(RowHT)); wg.addSingleFloat(&control.basex,v1,v2,v3, "Red",  .cageXYZ)
         wg.addColor(2,Float(RowHT)); wg.addSingleFloat(&control.basey,v1,v2,v3, "Green",.cageXYZ)
         
-        if control.formula != JULIA_FORMULA {
+        if control.formula != JULIA {
             wg.addColor(3,Float(RowHT)); wg.addSingleFloat(&control.basez,v1,v2,v3, "Blue", .cageXYZ)
         }
         
@@ -122,8 +128,8 @@ class ViewController: UIViewController, WGDelegate {
         wg.addOptionSelect(3,"Cloud Count","Select # Overlapping Clouds",cOptions);
         
         wg.addLine()
-        histogramView.frame = CGRect(x:5, y:wg.nextYCoord()+2, width:wgWidth-10, height:44)
-        view.bringSubview(toFront:histogramView)
+        hv.frame = CGRect(x:5, y:wg.nextYCoord()+2, width:WGWIDTH-10, height:44)
+        view.bringSubview(toFront:hv)
         
         wg.addGap(30)
         wg.addSingleFloat(&controlCenter,0,40,2,"Center",.histo)
@@ -131,32 +137,32 @@ class ViewController: UIViewController, WGDelegate {
         wg.addString("",1)
         
         wg.addLine()
-        wg.addDualFloat(&controlColorRange,&controlColorOffset,0,256,50,"Color",.color)
+        wg.addCommand("ColorEdit",.colorEdit)
         wg.addCommand("Palette",.palette)
         wg.addLine()
         
-        switch control.formula {
-        case JULIA_FORMULA :
+        switch Int(control.formula) {
+        case JULIA :
             wg.addLegend("Julia")
             wg.addDualFloat(UnsafeMutableRawPointer(&control.re1),  UnsafeMutableRawPointer(&control.re2), -4,4,1,"Real", .juliaBox)
             wg.addDualFloat(UnsafeMutableRawPointer(&control.im1),  UnsafeMutableRawPointer(&control.im2), -4,4,1,"Imag", .juliaBox)
             wg.addDualFloat(UnsafeMutableRawPointer(&control.mult1),UnsafeMutableRawPointer(&control.mult2),-3,3, 0.25,"Mult", .juliaBox)
             wg.addDualFloat(UnsafeMutableRawPointer(&control.zoom1),UnsafeMutableRawPointer(&control.zoom2),20,500,100,"Zoom", .juliaBox)
             wg.addLine()
-        case QJULIA_FORMULA :
+        case QJULIA :
             wg.addLegend("Q Julia")
             wg.addDualFloat(UnsafeMutableRawPointer(&control.re1),  UnsafeMutableRawPointer(&control.re2), -1,1,0.5,"P 1,2", .juliaBox)
             wg.addDualFloat(UnsafeMutableRawPointer(&control.im1),  UnsafeMutableRawPointer(&control.im2), -1,1,0.5,"P 3,4", .juliaBox)
             wg.addSingleFloat(UnsafeMutableRawPointer(&control.mult1),-1,1,0.5,"P 5", .juliaBox)
             wg.addSingleFloat(UnsafeMutableRawPointer(&control.mult2),-3,3,1,"P 6", .juliaBox)
             wg.addLine()
-        case BOX_FORMULA :
+        case BOX :
             wg.addLegend("Box")
             wg.addDualFloat(UnsafeMutableRawPointer(&control.re1),UnsafeMutableRawPointer(&control.im1),0.1,4, 0.3,"B Fold", .juliaBox)
             wg.addDualFloat(UnsafeMutableRawPointer(&control.mult1),UnsafeMutableRawPointer(&control.zoom1),0.1,4, 0.3,"S Fold", .juliaBox)
             wg.addDualFloat(UnsafeMutableRawPointer(&control.re2),UnsafeMutableRawPointer(&control.im2),0.1,10, 1,"Scale", .juliaBox)
             wg.addLine()
-        case IFS_FORMULA :
+        case IFS :
             wg.addOptionSelect(4,"IFS Equation","Select Equation Style",oeOptions);
             let v1:Float = -6, v2:Float = 6, v3:Float = 1
             wg.addDualFloat(UnsafeMutableRawPointer(&control.re1),  UnsafeMutableRawPointer(&control.re2), v1,v2,v3,"Scl/Off", .juliaBox)
@@ -200,7 +206,12 @@ class ViewController: UIViewController, WGDelegate {
             bulb.newBusy(.calc)
         case .palette :
             bulb.loadNextColorMap()
+            pm.setNeedsDisplay()
             bulb.newBusy(.vertices)
+        case .colorEdit :
+            pm.isHidden = false
+            layoutViews()
+            pm.setNeedsDisplay()
         case .color :
             updateRenderColor()
             bulb.newBusy(.vertices)
@@ -225,7 +236,7 @@ class ViewController: UIViewController, WGDelegate {
         case .saveLoad : performSegue(withIdentifier: "saveLoadSegue", sender: self)
         case .help     : performSegue(withIdentifier: "helpSegue", sender: self)
         case .equation :
-            textView.isHidden = !textView.isHidden
+            tv.isHidden = !tv.isHidden
             dynamicSourceCode()
         default : break
         }
@@ -261,48 +272,13 @@ class ViewController: UIViewController, WGDelegate {
         default : return "noOption"
         }
     }
-    
+
     func wgOptionSelected(_ ident:Int, _ index:Int) { // callback from popup
         switch(ident) {
         case 1 :    // formula
             control.formula = Int32(index)
+            resetControlSettings()
             initializeWidgetGroup()
-            
-            switch(Int32(index)) {
-            case JULIA_FORMULA :
-                control.re1 = -2.17020011
-                control.re2 = -0.0822001174
-                control.im1 = 0.534700274
-                control.im2 = -1.15230012
-                control.mult1 = 1.42700005
-                control.mult2 = 1.3253746
-                control.zoom1 = 189.199997
-                control.zoom2 = 211.949921
-            case BOX_FORMULA :
-                control.re1 = 1.671
-                control.im1 = 0.7316
-                control.mult1 = 1.6804
-                control.zoom1 = 1.266
-                control.re2 = 2.4677
-                control.im2 = 2.52
-            case QJULIA_FORMULA :
-                control.basex = -1.14133
-                control.basey = -1.12
-                control.basez = -1.102
-                control.scale = 0.00800000038
-                control.re1 = 0.0912499353
-                control.im1 = 0.485499978
-                control.mult1 = -0.389624834
-                control.mult2 = 1
-                control.re2 = -0.238750175
-                control.im2 = -0.389999956
-                control.center = 12
-                control.spread = 2
-            case IFS_FORMULA :
-                loadIFSDefaultSettings()
-            default : break
-            }
-            
             bulb.newBusy(.calc)
             
         case 2 :    // pointsize
@@ -322,6 +298,48 @@ class ViewController: UIViewController, WGDelegate {
     }
 
     //MARK: -
+    
+    func resetControlSettings() {
+        switch Int(control.formula) {
+        case JULIA :
+            control.re1 = -2.17020011
+            control.re2 = -0.0822001174
+            control.im1 = 0.534700274
+            control.im2 = -1.15230012
+            control.mult1 = 1.42700005
+            control.mult2 = 1.3253746
+            control.zoom1 = 189.199997
+            control.zoom2 = 211.949921
+        case BOX :
+            control.re1 = 1.671
+            control.im1 = 0.7316
+            control.mult1 = 1.6804
+            control.zoom1 = 1.266
+            control.re2 = 2.4677
+            control.im2 = 2.52
+        case QJULIA :
+            control.basex = -1.14133
+            control.basey = -1.12
+            control.basez = -1.102
+            control.scale = 0.00800000038
+            control.re1 = 0.0912499353
+            control.im1 = 0.485499978
+            control.mult1 = -0.389624834
+            control.mult2 = 1
+            control.re2 = -0.238750175
+            control.im2 = -0.389999956
+            control.center = 12
+            control.spread = 2
+        case IFS :
+            loadIFSDefaultSettings()
+        default : break
+        }
+        
+        controlColorRange = 128
+        controlColorOffset = 128
+        controlCenter = 10
+        controlSpread = 2
+    }
     
     func loadIFSDefaultSettings() {
         control.spread = 2
@@ -451,34 +469,42 @@ class ViewController: UIViewController, WGDelegate {
     
     //MARK: -
     
-    var wgWidth:CGFloat = 0
+    let WGWIDTH:CGFloat = 120
     
     @objc func layoutViews() {
         let xs:CGFloat = view.bounds.width
         let ys:CGFloat = view.bounds.height
         
-        wgWidth = wg.isHidden ? 0 : 120
-        let vxs = xs - wgWidth
+        let wgWidth:CGFloat = wg.isHidden ? 0 : WGWIDTH
+        let pmWidth:CGFloat = pm.isHidden ? 0 : 120
+        let vxs = xs - wgWidth - pmWidth
         
-        if !wg.isHidden { wg.frame = CGRect(x:0, y:0, width:wgWidth, height:view.bounds.height) }
-        
-        histogramView.isHidden = wg.isHidden
-        
+        var xBase = CGFloat()
+        if !wg.isHidden {
+            wg.frame = CGRect(x:xBase, y:0, width:wgWidth, height:view.bounds.height)
+            xBase += wgWidth
+        }
+        if !pm.isHidden {
+            pm.frame = CGRect(x:xBase, y:0, width:pmWidth, height:view.bounds.height)
+            xBase += pmWidth
+        }
+
         if stereoFlag {
             mtkViewR.isHidden = false
-            mtkViewL.frame = CGRect(x:wgWidth, y:0, width:vxs/2, height:ys)
-            mtkViewR.frame = CGRect(x:wgWidth + vxs/2, y:0, width:vxs/2, height:ys)
+            mtkViewL.frame = CGRect(x:xBase, y:0, width:vxs/2, height:ys)
+            mtkViewR.frame = CGRect(x:xBase + vxs/2, y:0, width:vxs/2, height:ys)
         }
         else {
             mtkViewR.isHidden = true
-            mtkViewL.frame = CGRect(x:wgWidth, y:0, width:vxs, height:ys)
+            mtkViewL.frame = CGRect(x:xBase, y:0, width:vxs, height:ys)
         }
         
         viewCenter.x = mtkViewL.frame.width/2
         viewCenter.y = mtkViewL.frame.height/2
         arcBall.initialize(Float(mtkViewL.frame.width),Float(mtkViewL.frame.height))
         
-        textView.frame = CGRect(x:wgWidth+10, y:1, width:520, height:760)
+        hv.isHidden = wg.isHidden
+        tv.frame = CGRect(x:xBase+10, y:1, width:520, height:760)
     }
     
     //MARK:-
@@ -520,32 +546,12 @@ class ViewController: UIViewController, WGDelegate {
     func updateControlCenter() {
         control.center = Int32(controlCenter)
         control.spread = Int32(controlSpread)
+        pm.bellCurveColorScheme()
     }
     
     func reset() {
-        control.basex = 0
-        control.basey = 0
-        control.basez = 0
-        control.scale = 0.01
-        control.power = 8
-        control.re1 = 1
-        control.im1 = 1
-        control.mult1 = 1.9
-        control.zoom1 = 740
-        control.re2 = 0
-        control.im2 = 0
-        control.mult2 = 0
-        control.zoom2 = 0
+        resetControlSettings()
         
-        control.formula = 0
-        control.hop = 1
-        control.center = 5
-        control.spread = 2
-        control.offset = 64
-        control.range = 128
-        control.cloudIndex = 0
-        
-        bulb.reset();
         undoControl1 = control
         undoControl2 = control
         
@@ -555,12 +561,7 @@ class ViewController: UIViewController, WGDelegate {
         cloudCountIndex = 0
         updateRenderCloudCount()
         
-        controlColorRange = 128
-        controlColorOffset = 128
         updateRenderColor()
-        
-        controlCenter = 10
-        controlSpread = 2
         updateControlCenter()
         
         camera = float3(0,0,170)
@@ -623,6 +624,12 @@ class ViewController: UIViewController, WGDelegate {
 func fClamp(_ v:Float, _ range:float2) -> Float {
     if v < range.x { return range.x }
     if v > range.y { return range.y }
+    return v
+}
+
+func fClamp(_ v:Float, _ min:Float, _ max:Float) -> Float {
+    if v < min { return min }
+    if v > max { return max }
     return v
 }
 

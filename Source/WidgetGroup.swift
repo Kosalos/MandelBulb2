@@ -9,7 +9,7 @@ protocol WGDelegate {
 }
 
 enum CmdIdent { case none,changeEnd,power,help,reset,undo,showAxes,smooth,smooth2,quant,quant2,saveLoad,palette,stereo,
-    cageXYZ,cageScale,histo,color,juliaBox,equation }
+    cageXYZ,cageScale,histo,color,juliaBox,equation,colorEdit }
 enum WgEntryKind { case singleFloat,dualFloat,dropDown,option,command,legend,line,string,color,move,gap }
 
 let NONE:Int = -1

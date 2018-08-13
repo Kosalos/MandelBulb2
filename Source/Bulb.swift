@@ -7,9 +7,11 @@ let HBUFFERSIZE = MemoryLayout<Int32>.size * 256
 let NUM_CLOUD = 8
 var cloudCount:Int = 1
 let vMax = Int(Float(255000000) / Float( MemoryLayout<TVertex>.size))
-var hBuffer:MTLBuffer! = nil
+var hBuffer:MTLBuffer! = nil    // histogram
 var pointSize:Float = 4
 var vCount:Int = 0
+
+var colorMapIndex:Int = 0
 
 enum Busy { case idle,calc,calc2,smooth,smooth2,quantize,vertices,controlLoaded }
 
@@ -33,7 +35,7 @@ class Bulb {
         control.scale = 0.008
         control.power = 8
         
-        if control.formula == JULIA_FORMULA { 
+        if control.formula == JULIA {
             control.basex = -0.6296
             control.basey = -0.5722
             control.basez = -3.3456
@@ -48,7 +50,7 @@ class Bulb {
             control.zoom2 = 553
         }
         
-        if control.formula == BOX_FORMULA {
+        if control.formula == BOX {
             control.re1 = 1.04
             control.im1 = 1.77
             control.mult1 = 0.81
@@ -235,7 +237,7 @@ class Bulb {
 
             vBuffer = gDevice.makeBuffer(bytes:vertices, length: vMax * MemoryLayout<TVertex>.stride, options: MTLResourceOptions())
 
-            loadNextColorMap()
+            loadColorMap()
         }
         
         for i in 0 ..< cloudCount {
@@ -274,6 +276,11 @@ class Bulb {
         if mBuffer == nil { return }
         memset(vCountBuffer.contents(),0,MemoryLayout<Counter>.stride)
         
+//        for i in 0 ..< 256 {
+//            setPColor(Int32(i),0)
+//            if i < 12 && ((i % 2) == 0) { setPColor(Int32(i),Int32(i*8)) }
+//        }
+        
         for i in 0 ..< cloudCount {
             control.cloudIndex = Int32(i)
             controlBuffer.contents().copyMemory(from: &control, byteCount:MemoryLayout<Control>.stride)
@@ -297,20 +304,15 @@ class Bulb {
         memcpy(&result,vCountBuffer.contents(),MemoryLayout<Counter>.stride)
         vCount = Int(result.count)
 
-        if hv != nil {
+        if vc.hv != nil {
             histogramUpdate()
-            hv.setNeedsDisplay()
+            vc.hv.setNeedsDisplay()
         }
     }
     
     //MARK: ==================================
     
-    var colorMapIndex:Int = -1
-    
-    func loadNextColorMap() {
-        colorMapIndex += 1
-        if colorMapIndex > 3 { colorMapIndex = 0 }
-        
+    func loadColorMap() {
         let jbSize = MemoryLayout<float3>.stride * 256
         
         switch colorMapIndex {
@@ -321,7 +323,14 @@ class Bulb {
         default : break
         }
     }
-    
+
+    func loadNextColorMap() {
+        colorMapIndex += 1
+        if colorMapIndex > 3 { colorMapIndex = 0 }
+        
+        loadColorMap()
+    }
+
     //MARK: ==================================
     func smooth() {
         func smoothSession(_ index1:Int, _ index2:Int) {
@@ -389,12 +398,12 @@ class Bulb {
     func smoothData2() { newBusy(.smooth2) }
 
     func quantizeData() {
-        control.unused1 = 0xf8;
+        control.param = 0xf8;
         newBusy(.quantize)
     }
 
     func quantizeData2() {
-        control.unused1 = 0xfe;
+        control.param = 0xfe;
         newBusy(.quantize)
     }
 
@@ -408,7 +417,7 @@ class Bulb {
     }
     
     func fastCalc() {
-        control.hop = control.formula == BOX_FORMULA ? 2 : 8
+        control.hop = control.formula == BOX ? 2 : 8
         newBusy(.calc2)
     }
     

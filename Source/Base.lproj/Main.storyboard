@@ -49,38 +49,17 @@
                                     <outletCollection property="gestureRecognizers" destination="WQb-II-ygS" appends="YES" id="N03-6V-tyk"/>
                                 </connections>
                             </view>
-                            <view tag="12" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="DJG-QT-dmm" customClass="WidgetGroup" customModule="MandelBulb2" customModuleProvider="target">
-                                <rect key="frame" x="69" y="303" width="114" height="90"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <color key="backgroundColor" red="0.1223958432674408" green="0.1223958432674408" blue="0.1223958432674408" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
-                            </view>
-                            <view tag="12" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="J3H-li-zgP" customClass="HistogramView" customModule="MandelBulb2" customModuleProvider="target">
-                                <rect key="frame" x="69" y="426" width="114" height="90"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <color key="backgroundColor" red="0.1223958433" green="0.1223958433" blue="0.1223958433" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
-                            </view>
-                            <textView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" fixedFrame="YES" bounces="NO" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" delaysContentTouches="NO" canCancelContentTouches="NO" bouncesZoom="NO" editable="NO" textAlignment="natural" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kns-Ra-bVt">
-                                <rect key="frame" x="448" y="315" width="240" height="128"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
-                            </textView>
                         </subviews>
                         <color key="backgroundColor" cocoaTouchSystemColor="scrollViewTexturedBackgroundColor"/>
                         <gestureRecognizers/>
                     </view>
                     <connections>
-                        <outlet property="histogramView" destination="J3H-li-zgP" id="rsU-jp-jQG"/>
                         <outlet property="mtkViewL" destination="z2q-xp-nv4" id="5dt-jh-Lvx"/>
                         <outlet property="mtkViewR" destination="Xus-nt-1UP" id="PlJ-Pu-dhn"/>
-                        <outlet property="textView" destination="kns-Ra-bVt" id="S5X-Hf-Ewp"/>
-                        <outlet property="wg" destination="DJG-QT-dmm" id="ho0-IA-kws"/>
-                        <segue destination="DmP-PU-S1P" kind="popover" identifier="helpSegue" popoverAnchorView="DJG-QT-dmm" id="Sff-rR-uAS">
+                        <segue destination="DmP-PU-S1P" kind="popover" identifier="helpSegue" popoverAnchorView="z2q-xp-nv4" id="Sff-rR-uAS">
                             <popoverArrowDirection key="popoverArrowDirection" up="YES" down="YES" left="YES" right="YES"/>
                         </segue>
-                        <segue destination="7tH-9t-GCc" kind="popover" identifier="saveLoadSegue" popoverAnchorView="DJG-QT-dmm" id="3d2-g5-7T7">
+                        <segue destination="7tH-9t-GCc" kind="popover" identifier="saveLoadSegue" popoverAnchorView="z2q-xp-nv4" id="3d2-g5-7T7">
                             <popoverArrowDirection key="popoverArrowDirection" up="YES" down="YES" left="YES" right="YES"/>
                         </segue>
                     </connections>
@@ -192,7 +171,7 @@
                     <value key="contentSizeForViewInPopover" type="size" width="640" height="640"/>
                     <size key="freeformSize" width="640" height="640"/>
                     <connections>
-                        <outlet property="textView" destination="a8Z-Ux-P4R" id="yjT-Yu-3do"/>
+                        <outlet property="tv" destination="a8Z-Ux-P4R" id="yjT-Yu-3do"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="uAD-4z-cQ1" userLabel="First Responder" sceneMemberID="firstResponder"/>
