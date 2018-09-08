@@ -6,7 +6,7 @@
 #define VMAX  int((255000000 / sizeof(TVertex)) - 10000)
 #define WIDTH 300 // divisible by threadgroups (20)
 
-enum { BULB_1,BULB_2,BULB_3,BULB_4,BULB_5,JULIA,BOX,QJULIA,IFS };
+enum { BULB_1,BULB_2,BULB_3,BULB_4,BULB_5,JULIA,BOX,QJULIA,IFS,APOLLONIAN };
 
 typedef struct {
     unsigned char data[WIDTH][WIDTH][WIDTH];
@@ -69,6 +69,16 @@ void setControlPointer(Control *ptr);
 void setPColor(int index, int value);
 int  getPColor(int index);
 void pColorClear(void);
+
+// moving color lookup tables from Swift to 'C'  greatly speeds up compile time
+const vector_float3 colorLookup1(int index);
+const vector_float3 colorLookup2(int index);
+const vector_float3 colorLookup3(int index);
+const vector_float3 colorLookup4(int index);
+const vector_float3 *colorLookupPtr1(void);
+const vector_float3 *colorLookupPtr2(void);
+const vector_float3 *colorLookupPtr3(void);
+const vector_float3 *colorLookupPtr4(void);
 
 #endif
 

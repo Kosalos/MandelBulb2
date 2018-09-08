@@ -219,6 +219,21 @@ func dynamicSourceCode() {
         addString("    if(length(w) > 4) break;")
         addString("    if(++iter == MAX_ITERATIONS) break;")
         addString("}")
+    case APOLLONIAN :
+        addString("Apollonian Gasket")
+        addString(" ")
+        addString(String(format:"float t = %8.5f * (%8.5f + 0.25 * ",control.re1,control.re2))
+        addString(String(format:"    cos(%8.5f * 3.14159 * (position.z - position.x) / %8.5f));",control.mult1,control.mult2))
+        addString(" ")
+        addString("for(;;) {")
+        addString("    position = -1.0 + 2.0 * fract(0.5 * position + 0.5);")
+        addString(" ")
+        addString("    distance = dot(w,w);")
+        addString("    if(distance > 1) break;")
+        addString("    if(++iter == 120) break;")
+        addString(" ")
+        addString("    position *= t / distance;")
+        addString("}")
     default : break
     }
     

@@ -9,14 +9,14 @@ protocol WGDelegate {
 }
 
 enum CmdIdent { case none,changeEnd,power,help,reset,undo,showAxes,smooth,smooth2,quant,quant2,saveLoad,palette,stereo,
-    cageXYZ,cageScale,histo,color,juliaBox,equation,colorEdit }
+    cageXYZ,cageScale,histo,color,fastCalc,equation,colorEdit }
 enum WgEntryKind { case singleFloat,dualFloat,dropDown,option,command,legend,line,string,color,move,gap }
 
 let NONE:Int = -1
 let FontSZ:CGFloat = 20
-let RowHT:CGFloat = 24
-let GrphSZ:CGFloat = 21
-let TxtYoff:CGFloat = 0
+let RowHT:CGFloat = 23
+let GrphSZ:CGFloat = RowHT - 4
+let TxtYoff:CGFloat = -2
 let Tab1:CGFloat = 5     // graph x1
 let Tab2:CGFloat = 24    // text after graph
 var py = CGFloat()
@@ -112,14 +112,14 @@ class WidgetGroup: UIView {
         data[ddIndex].str.append(iname)
     }
     
-    func addSingleFloat(_ vx:UnsafeMutableRawPointer, _ min:Float, _ max:Float,  _ delta:Float, _ iname:String, _ nCmd:CmdIdent = .none) {
+    func addSingleFloat(_ vx:UnsafeMutableRawPointer, _ min:Float, _ max:Float,  _ delta:Float, _ iname:String, _ nCmd:CmdIdent = .fastCalc) {
         newEntry()
         data[dIndex].kind = .singleFloat
         data[dIndex].valuePointerX = vx
         addCommon(dIndex,min,max,delta,iname,nCmd)
     }
     
-    func addDualFloat(_ vx:UnsafeMutableRawPointer, _ vy:UnsafeMutableRawPointer, _ min:Float, _ max:Float,  _ delta:Float, _ iname:String, _ nCmd:CmdIdent = .none) {
+    func addDualFloat(_ vx:UnsafeMutableRawPointer, _ vy:UnsafeMutableRawPointer, _ min:Float, _ max:Float,  _ delta:Float, _ iname:String, _ nCmd:CmdIdent = .fastCalc) {
         newEntry()
         data[dIndex].kind = .dualFloat
         data[dIndex].valuePointerX = vx
@@ -260,6 +260,9 @@ class WidgetGroup: UIView {
         
         UIColor.white.setStroke()
         UIBezierPath(rect:bounds).stroke()
+        
+        UIColor.white.setStroke()
+        drawHLine(context!,0,bounds.width,767) // bottom egde of small iPads (1024x768)
     }
     
     func nextYCoord() -> CGFloat {

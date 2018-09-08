@@ -92,13 +92,13 @@ class PColorView: UIView {
 
     //MARK:-
     
-    func slideEntries(_ dir:Int) {
+    func slideEntries(_ dir:Int) {  // skip entries 0,1
         if dir > 0 {
-            for i in (2 ..< MAX_ITERATIONS).reversed() { setPColor(i,getPColor(i-1)) } // skip 0
-            setPColor(1,0)
+            for i in (3 ..< MAX_ITERATIONS).reversed() { setPColor(i,getPColor(i-1)) } // skip 0,1
+            setPColor(2,0)
         }
         else {
-            for i in 0 ..< MAX_ITERATIONS-1 { setPColor(i,getPColor(i+1)) }
+            for i in 2 ..< MAX_ITERATIONS-1 { setPColor(i,getPColor(i+1)) }
             setPColor(MAX_ITERATIONS-1,0)
         }
         
@@ -130,10 +130,10 @@ class PColorView: UIView {
         var color = vector_float3()
         
         switch colorMapIndex {
-        case 0 : color = colorMap1[index]
-        case 1 : color = colorMap2[index]
-        case 2 : color = colorMap3[index]
-        default: color = colorMap4[index]
+        case 0 : color = colorLookup1(Int32(index))
+        case 1 : color = colorLookup2(Int32(index))
+        case 2 : color = colorLookup3(Int32(index))
+        default: color = colorLookup4(Int32(index))
         }
 
         let c = UIColor(red:CGFloat(color.x), green:CGFloat(color.y), blue:CGFloat(color.z), alpha:1)

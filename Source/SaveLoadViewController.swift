@@ -19,7 +19,8 @@ let bColors:[UIColor] = [
     UIColor(red:0.8, green:0.4, blue:0.1, alpha:1),     // julia
     UIColor(red:0.3, green:0.6, blue:0.2, alpha:1),     // box
     UIColor(red:0.6, green:0.3, blue:0.6, alpha:1),     // Q julia
-    UIColor(red:0.3, green:0.6, blue:0.6, alpha:1)      // IFS
+    UIColor(red:0.3, green:0.6, blue:0.6, alpha:1),     // IFS
+    UIColor(red:0.9, green:0.1, blue:0.1, alpha:1)      // Apollonian
 ]
 
 class SaveLoadViewController: UIViewController,UITableViewDataSource, UITableViewDelegate,SLCellDelegate {
@@ -43,11 +44,12 @@ class SaveLoadViewController: UIViewController,UITableViewDataSource, UITableVie
         }
         else {
             switch Int(cc.formula) {
-            case JULIA:     str = String(format:"%2d   Julia %@",index,dateString)
-            case BOX :      str = String(format:"%2d   Box %@",index,dateString)
-            case QJULIA :   str = String(format:"%2d   Q Julia %@",index,dateString)
-            case IFS :      str = String(format:"%2d   IFS %@ %@",index,oeOptions[Int(cc.ifsIndex)],dateString)
-            default :       str = String(format:"%2d   Bulb %d, %@", index,cc.formula + 1,dateString)
+            case JULIA:       str = String(format:"%2d   Julia %@",index,dateString)
+            case BOX :        str = String(format:"%2d   Box %@",index,dateString)
+            case QJULIA :     str = String(format:"%2d   Q Julia %@",index,dateString)
+            case IFS :        str = String(format:"%2d   IFS %@ %@",index,oeOptions[Int(cc.ifsIndex)],dateString)
+            case APOLLONIAN : str = String(format:"%2d   Apollonian, %@", index,dateString)
+            default :         str = String(format:"%2d   Bulb %d, %@", index,cc.formula + 1,dateString)
             }
         }
         

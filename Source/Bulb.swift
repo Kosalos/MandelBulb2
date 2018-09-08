@@ -316,10 +316,10 @@ class Bulb {
         let jbSize = MemoryLayout<float3>.stride * 256
         
         switch colorMapIndex {
-        case 0 : jetBuffer.contents().copyMemory(from:colorMap1, byteCount:jbSize)
-        case 1 : jetBuffer.contents().copyMemory(from:colorMap2, byteCount:jbSize)
-        case 2 : jetBuffer.contents().copyMemory(from:colorMap3, byteCount:jbSize)
-        case 3 : jetBuffer.contents().copyMemory(from:colorMap4, byteCount:jbSize)
+        case 0 : jetBuffer.contents().copyMemory(from:colorLookupPtr1(), byteCount:jbSize)
+        case 1 : jetBuffer.contents().copyMemory(from:colorLookupPtr2(), byteCount:jbSize)
+        case 2 : jetBuffer.contents().copyMemory(from:colorLookupPtr3(), byteCount:jbSize)
+        case 3 : jetBuffer.contents().copyMemory(from:colorLookupPtr4(), byteCount:jbSize)
         default : break
         }
     }
@@ -417,7 +417,7 @@ class Bulb {
     }
     
     func fastCalc() {
-        control.hop = control.formula == BOX ? 2 : 8
+        control.hop = (control.formula == BOX || control.formula == APOLLONIAN) ? 2 : 8
         newBusy(.calc2)
     }
     

@@ -133,7 +133,25 @@ kernel void mapShader
         d = iter;
         return;
     }
-    
+
+    //MARK: - APOLLONIAN
+    if (control.formula == APOLLONIAN) {
+        float distance,t = control.re1 * (control.re2 + 0.25 * cos(control.mult1 * 3.1415926 * (w.z - w.x) / control.mult2));
+
+        for(;;) {
+            w = -1.0 + 2.0 * fract(0.5 * w + 0.5);
+
+            distance = dot(w,w);
+            if(distance > 1) break;
+            if(++iter == 120) break;
+            
+            w *= t / distance;
+        }
+
+        d = iter;
+        return;
+    }
+
     //MARK: - IFS_FORMULA
     // http://hirnsohle.de/test/fractalLab/
     // http://www.fractalforums.com/sierpinski-gasket/kaleidoscopic-(escape-time-ifs)/
@@ -415,31 +433,31 @@ kernel void adjacentShader
  device Map3D &src [[buffer(0)]],
  uint3 p [[thread_position_in_grid]])
 {
-    unsigned char M = 3;
+    unsigned char M = 2;
     unsigned char d = src.data[p.x][p.y][p.z];
     if(d < M) { src.data[p.x][p.y][p.z] = 255; return; }
-    
+
     int x1 = p.x - 1; if(x1 < 0) x1 = 1;
     int y1 = p.y - 1; if(y1 < 0) y1 = 1;
     int z1 = p.z - 1; if(z1 < 0) z1 = 1;
-    
+
     int z2 = p.z + 1; if(z2 == WIDTH) z2 = WIDTH-2;
-    
+
     d = src.data[x1][y1][z1];   if(d < M || d == 255) return;
     d = src.data[x1][y1][z2];   if(d < M || d == 255) return;
-    
+
     int y2 = p.y + 1; if(y2 == WIDTH) y2 = WIDTH-2;
-    
+
     d = src.data[x1][y2][z1];   if(d < M || d == 255) return;
     d = src.data[x1][y2][z2];   if(d < M || d == 255) return;
-    
+
     int x2 = p.x + 1; if(x2 == WIDTH) x2 = WIDTH-2;
-    
+
     d = src.data[x2][y1][z1];   if(d < M || d == 255) return;
     d = src.data[x2][y1][z2];   if(d < M || d == 255) return;
     d = src.data[x2][y2][z1];   if(d < M || d == 255) return;
     d = src.data[x2][y2][z2];   if(d < M || d == 255) return;
-    
+
     src.data[p.x][p.y][p.z] = 255;      // generated zero
 }
 
@@ -547,20 +565,27 @@ kernel void verticeShader
  device TVertex *vertices   [[buffer(4)]], // output list of vertices to render
  uint3 p [[thread_position_in_grid]])
 {
-    int cIndex = int(src.data[p.x][p.y][p.z]);
-    if(cIndex == 0 || cIndex >= 255) return;     // non-rendered point
-    
-    if(control.pColor[cIndex] == 0) return;    // non-rendered value
-    
     if(control.hop > 1) {       // 'fast calc' skips most coordinates
         if(int(p.x) % control.hop) return;
         if(int(p.y) % control.hop) return;
         if(int(p.z) % control.hop) return;
     }
     
-//
-//    if(cIndex < control.center - control.spread) return;
-//    if(cIndex > control.center + control.spread) return;
+    int cIndex = int(src.data[p.x][p.y][p.z]);
+    if(cIndex == 0 || cIndex >= 255) return;     // non-rendered point
+
+    int ccIndex;
+    
+    if(cIndex >= MAX_ITERATIONS) {  // dithered pixels for large spheres in Apollonian mode
+        int skip = p.x + p.y * p.z;
+        if((skip & 15) != 15) return;
+        ccIndex = control.pColor[1];
+    }
+    else {
+        ccIndex = control.pColor[cIndex];
+    }
+    
+    if(ccIndex == 0) return;
     
     uint index = atomic_load(&counter);     // our assigned output vertex index
     if(index >= VMAX) return;
@@ -575,13 +600,7 @@ kernel void verticeShader
     v.pos.y = (float(p.y) - center) / 2;
     v.pos.z = (float(p.z) - center) / 2;
     
-//    float diff = float(cIndex - control.center) * float(control.range) / float(1 + control.spread);
-//    cIndex = control.center + int(diff) + control.offset;
-//    
-//    cIndex &= 255;
-    
-    cIndex = control.pColor[cIndex]; 
-    v.color = float4(color[cIndex],1);
+    v.color = float4(color[ccIndex],1);
 }
 
 //MARK: -

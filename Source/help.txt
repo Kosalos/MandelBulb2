@@ -105,6 +105,16 @@ IFS ----------
     shift, and two rotation angles.
     Tap the equation legend to launch the selection dialog.
 
+Apollonian ------------
+    Not shown in the legend, when you select the Apollonian
+    formula this region holds four widgets.
+    Note: Apollonian Gaskets comprise large tangent spheres.
+    Their color has been assigned to the first 'ColorEdit' slot.
+    If the spheres are not visible, tap 'ColorEdit', and
+    set the color of the first bar.
+    Note: use the 'Scale' control to view the
+    endlessly repeating pattern.
+
 P.  Reset parameters back to MandelBulb formula #1.
 Q.  VERY Limited Undo.
     You can only undo the most recent 'Calc'.

@@ -74,6 +74,9 @@ class ViewController: UIViewController, WGDelegate {
         tv.textColor = .white
         tv.text = ""
         tv.isHidden = true
+        tv.isEditable = false
+        tv.isSelectable = false
+        tv.isUserInteractionEnabled = false
         
         pm.initialize()
         layoutViews()
@@ -99,7 +102,7 @@ class ViewController: UIViewController, WGDelegate {
     
     //MARK: -
     
-    let eOptions:[String] = [ "Bulb 1","Bulb 2","Bulb 3","Bulb 4","Bulb 5","Julia","Box","Q Julia","IFS" ]
+    let eOptions:[String] = [ "Bulb 1","Bulb 2","Bulb 3","Bulb 4","Bulb 5","Julia","Box","Q Julia","IFS","Apollonian" ]
     let pOptions:[String] = [ "PtSz 1","PtSz 2","PtSz 4","PtSz 8" ]
     let cOptions:[String] = [ "#Clouds 1","#Clouds 2","#Clouds 4" ]
     var chgScale:Float = 1
@@ -144,31 +147,38 @@ class ViewController: UIViewController, WGDelegate {
         switch Int(control.formula) {
         case JULIA :
             wg.addLegend("Julia")
-            wg.addDualFloat(UnsafeMutableRawPointer(&control.re1),  UnsafeMutableRawPointer(&control.re2), -4,4,1,"Real", .juliaBox)
-            wg.addDualFloat(UnsafeMutableRawPointer(&control.im1),  UnsafeMutableRawPointer(&control.im2), -4,4,1,"Imag", .juliaBox)
-            wg.addDualFloat(UnsafeMutableRawPointer(&control.mult1),UnsafeMutableRawPointer(&control.mult2),-3,3, 0.25,"Mult", .juliaBox)
-            wg.addDualFloat(UnsafeMutableRawPointer(&control.zoom1),UnsafeMutableRawPointer(&control.zoom2),20,500,100,"Zoom", .juliaBox)
+            wg.addDualFloat(UnsafeMutableRawPointer(&control.re1),  UnsafeMutableRawPointer(&control.re2), -4,4,1,"Real")
+            wg.addDualFloat(UnsafeMutableRawPointer(&control.im1),  UnsafeMutableRawPointer(&control.im2), -4,4,1,"Imag")
+            wg.addDualFloat(UnsafeMutableRawPointer(&control.mult1),UnsafeMutableRawPointer(&control.mult2),-3,3, 0.25,"Mult")
+            wg.addDualFloat(UnsafeMutableRawPointer(&control.zoom1),UnsafeMutableRawPointer(&control.zoom2),20,500,100,"Zoom")
             wg.addLine()
         case QJULIA :
             wg.addLegend("Q Julia")
-            wg.addDualFloat(UnsafeMutableRawPointer(&control.re1),  UnsafeMutableRawPointer(&control.re2), -1,1,0.5,"P 1,2", .juliaBox)
-            wg.addDualFloat(UnsafeMutableRawPointer(&control.im1),  UnsafeMutableRawPointer(&control.im2), -1,1,0.5,"P 3,4", .juliaBox)
-            wg.addSingleFloat(UnsafeMutableRawPointer(&control.mult1),-1,1,0.5,"P 5", .juliaBox)
-            wg.addSingleFloat(UnsafeMutableRawPointer(&control.mult2),-3,3,1,"P 6", .juliaBox)
+            wg.addDualFloat(UnsafeMutableRawPointer(&control.re1),  UnsafeMutableRawPointer(&control.re2), -1,1,0.5,"P 1,2")
+            wg.addDualFloat(UnsafeMutableRawPointer(&control.im1),  UnsafeMutableRawPointer(&control.im2), -1,1,0.5,"P 3,4")
+            wg.addSingleFloat(UnsafeMutableRawPointer(&control.mult1),-1,1,0.5,"P 5")
+            wg.addSingleFloat(UnsafeMutableRawPointer(&control.mult2),-3,3,1,"P 6")
             wg.addLine()
         case BOX :
             wg.addLegend("Box")
-            wg.addDualFloat(UnsafeMutableRawPointer(&control.re1),UnsafeMutableRawPointer(&control.im1),0.1,4, 0.3,"B Fold", .juliaBox)
-            wg.addDualFloat(UnsafeMutableRawPointer(&control.mult1),UnsafeMutableRawPointer(&control.zoom1),0.1,4, 0.3,"S Fold", .juliaBox)
-            wg.addDualFloat(UnsafeMutableRawPointer(&control.re2),UnsafeMutableRawPointer(&control.im2),0.1,10, 1,"Scale", .juliaBox)
+            wg.addDualFloat(UnsafeMutableRawPointer(&control.re1),UnsafeMutableRawPointer(&control.im1),0.1,4, 0.3,"B Fold")
+            wg.addDualFloat(UnsafeMutableRawPointer(&control.mult1),UnsafeMutableRawPointer(&control.zoom1),0.1,4, 0.3,"S Fold")
+            wg.addDualFloat(UnsafeMutableRawPointer(&control.re2),UnsafeMutableRawPointer(&control.im2),0.1,10, 1,"Scale")
             wg.addLine()
         case IFS :
             wg.addOptionSelect(4,"IFS Equation","Select Equation Style",oeOptions);
             let v1:Float = -6, v2:Float = 6, v3:Float = 1
-            wg.addDualFloat(UnsafeMutableRawPointer(&control.re1),  UnsafeMutableRawPointer(&control.re2), v1,v2,v3,"Scl/Off", .juliaBox)
-            wg.addSingleFloat(UnsafeMutableRawPointer(&control.im1), v1,v2,v3,"Shift", .juliaBox)
-            wg.addDualFloat(UnsafeMutableRawPointer(&control.mult1),  UnsafeMutableRawPointer(&control.mult2), v1,v2,v3,"Rot 1", .juliaBox)
-            wg.addDualFloat(UnsafeMutableRawPointer(&control.zoom1),  UnsafeMutableRawPointer(&control.zoom2), v1,v2,v3,"Rot 2", .juliaBox)
+            wg.addDualFloat(UnsafeMutableRawPointer(&control.re1),  UnsafeMutableRawPointer(&control.re2), v1,v2,v3,"Scl/Off")
+            wg.addSingleFloat(UnsafeMutableRawPointer(&control.im1), v1,v2,v3,"Shift")
+            wg.addDualFloat(UnsafeMutableRawPointer(&control.mult1),  UnsafeMutableRawPointer(&control.mult2), v1,v2,v3,"Rot 1")
+            wg.addDualFloat(UnsafeMutableRawPointer(&control.zoom1),  UnsafeMutableRawPointer(&control.zoom2), v1,v2,v3,"Rot 2")
+            wg.addLine()
+        case APOLLONIAN :
+            wg.addLegend("Apollonian")
+            wg.addSingleFloat(&control.mult1,0.001,100,50,"Mult")
+            wg.addSingleFloat(&control.mult2, 10,300,60,"P1")
+            wg.addSingleFloat(&control.re1, 0.5,1,0.2,"P2")
+            wg.addSingleFloat(&control.re2, 0.5,1,0.2,"P3")
             wg.addLine()
         default : break
         }
@@ -183,7 +193,6 @@ class ViewController: UIViewController, WGDelegate {
         wg.addCommand("Save/Load",.saveLoad)
         wg.addCommand("Help",.help)
         wg.addCommand("Equation",.equation)
-        wg.addLine()
         wg.setNeedsDisplay()
     }
     
@@ -218,7 +227,7 @@ class ViewController: UIViewController, WGDelegate {
         case .histo :
             updateControlCenter()
             bulb.newBusy(.vertices)
-        case .juliaBox :
+        case .fastCalc :
             bulb.fastCalc()
             dynamicSourceCode()
         case .smooth   : bulb.smoothData()
@@ -332,6 +341,20 @@ class ViewController: UIViewController, WGDelegate {
             control.spread = 2
         case IFS :
             loadIFSDefaultSettings()
+        case APOLLONIAN :
+            control.basex = -1.34111273
+            control.basey = -1.31978285
+            control.basez = -1.30178273
+            control.scale = 0.00933188479
+            control.re1 = 0.998799979
+            control.mult1 = 62.9147491
+            control.mult2 = 143.37999
+            control.re2 = 0.827500105
+            control.center = 3
+            control.spread = 2
+            control.pColor.1 = 255
+            control.pColor.3 = 179
+            control.pColor.5 = 37
         default : break
         }
         
@@ -504,7 +527,7 @@ class ViewController: UIViewController, WGDelegate {
         arcBall.initialize(Float(mtkViewL.frame.width),Float(mtkViewL.frame.height))
         
         hv.isHidden = wg.isHidden
-        tv.frame = CGRect(x:xBase+10, y:1, width:520, height:760)
+        tv.frame = CGRect(x:xBase+10, y:1, width:420, height:500)
     }
     
     //MARK:-
