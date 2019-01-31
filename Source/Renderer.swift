@@ -138,7 +138,13 @@ class Renderer: NSObject, MTKViewDelegate {
         return try textureLoader.newTexture(name: textureName, scaleFactor:1.0, bundle:nil, options:textureLoaderOptions)
     }
     
+    var isBusy:Bool = false
+    
     func draw(in view: MTKView) {
+        
+        if isBusy { return }
+        isBusy = true
+        
         let toeIn:Float = 0.01
         let stereoAngle:Float = ident == 0 ? -toeIn : +toeIn
         
@@ -175,10 +181,14 @@ class Renderer: NSObject, MTKViewDelegate {
         //-----------------------------------
         
         renderEncoder.endEncoding()
-        if let drawable = view.currentDrawable { commandBuffer.present(drawable) }
-        commandBuffer.commit()
+        if let drawable = view.currentDrawable {
+            commandBuffer.present(drawable)
+            commandBuffer.commit()
+        }
         
         bulb.finishedRendering()
+        
+        isBusy = false
     }
     
     func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {

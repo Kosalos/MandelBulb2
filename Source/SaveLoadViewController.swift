@@ -53,7 +53,7 @@ class SaveLoadViewController: UIViewController,UITableViewDataSource, UITableVie
             }
         }
         
-        cell.loadCell.setTitle(str, for: UIControlState.normal)
+        cell.loadCell.setTitle(str, for: UIControl.State.normal)
 
         if Int(cc.formula) == IFS {  // color per equation
             cell.loadCell.backgroundColor = UIColor(red:0.3 + CGFloat(cc.ifsIndex)/12, green:0.6, blue:0.6, alpha:1)

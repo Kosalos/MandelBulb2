@@ -28,7 +28,7 @@
 
 /* Begin PBXFileReference section */
 		1D08EEB71FA539C700F287FD /* ArcBall.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArcBall.swift; sourceTree = "<group>"; };
-		1D14905F1F9FA199004B538F /* MandelBulb.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = MandelBulb.app; path = MandelBulb2.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1D14905F1F9FA199004B538F /* MandelBulb2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MandelBulb2.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1D1490621F9FA199004B538F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1D1490641F9FA199004B538F /* ShaderTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ShaderTypes.h; sourceTree = "<group>"; };
 		1D1490651F9FA199004B538F /* Renderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Renderer.swift; sourceTree = "<group>"; };
@@ -70,7 +70,7 @@
 		1D1490601F9FA199004B538F /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				1D14905F1F9FA199004B538F /* MandelBulb.app */,
+				1D14905F1F9FA199004B538F /* MandelBulb2.app */,
 			);
 			name = Products;
 			path = ..;
@@ -120,7 +120,7 @@
 			);
 			name = MandelBulb2;
 			productName = MarchingCubesPro;
-			productReference = 1D14905F1F9FA199004B538F /* MandelBulb.app */;
+			productReference = 1D14905F1F9FA199004B538F /* MandelBulb2.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -338,7 +338,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = Harry.com.MandelBulb2;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = Source/ShaderTypes.h;
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = 2;
 			};
 			name = Debug;
@@ -357,7 +357,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = Harry.com.MandelBulb2;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = Source/ShaderTypes.h;
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = 2;
 			};
 			name = Release;

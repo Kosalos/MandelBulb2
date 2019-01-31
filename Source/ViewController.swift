@@ -69,7 +69,7 @@ class ViewController: UIViewController, WGDelegate {
         swipeDown.direction = .down
         self.view.addGestureRecognizer(swipeDown)
         
-        view.bringSubview(toFront:tv)
+        view.bringSubviewToFront(tv)
         tv.backgroundColor = .clear
         tv.textColor = .white
         tv.text = ""
@@ -132,7 +132,7 @@ class ViewController: UIViewController, WGDelegate {
         
         wg.addLine()
         hv.frame = CGRect(x:5, y:wg.nextYCoord()+2, width:WGWIDTH-10, height:44)
-        view.bringSubview(toFront:hv)
+        view.bringSubviewToFront(hv)
         
         wg.addGap(30)
         wg.addSingleFloat(&controlCenter,0,40,2,"Center",.histo)

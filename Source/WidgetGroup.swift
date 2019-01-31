@@ -336,7 +336,7 @@ class WidgetGroup: UIView {
         deltaY = -Float(pt.y) / denom
         
         if data[focus].kind == .singleFloat {  // largest delta runs the show
-            if fabs(deltaY) > fabs(deltaX) { deltaX = deltaY }
+            if abs(deltaY) > abs(deltaX) { deltaX = deltaY }
         }
         
         if !data[focus].fastEdit {
@@ -355,7 +355,7 @@ class WidgetGroup: UIView {
         
         func attrString(_ text:String, _ key:String) {
             let a1 = NSMutableAttributedString(string: text,
-                                               attributes: [kCTFontAttributeName as NSAttributedStringKey:UIFont(name: "Helvetica", size: 24.0)!])
+                                               attributes: [kCTFontAttributeName as NSAttributedString.Key:UIFont(name: "Helvetica", size: 24.0)!])
             alert.setValue(a1, forKey: key)
         }
         
@@ -473,13 +473,13 @@ func drawText(_ x:CGFloat, _ y:CGFloat, _ color:UIColor, _ sz:CGFloat, _ str:Str
         let font = UIFont.init(name: "Helvetica", size:sz)!
         
         textFontAttributes = [
-            NSAttributedStringKey.font: font,
-            NSAttributedStringKey.foregroundColor: color,
-            NSAttributedStringKey.paragraphStyle: paraStyle,
+            NSAttributedString.Key.font: font,
+            NSAttributedString.Key.foregroundColor: color,
+            NSAttributedString.Key.paragraphStyle: paraStyle,
         ]
     }
     
-    str.draw(in: CGRect(x:x, y:y, width:800, height:100), withAttributes: textFontAttributes as? [NSAttributedStringKey : Any])
+    str.draw(in: CGRect(x:x, y:y, width:800, height:100), withAttributes: textFontAttributes as? [NSAttributedString.Key : Any])
 }
 
 
